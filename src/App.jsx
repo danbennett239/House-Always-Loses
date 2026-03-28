@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
+import { useGameEngine } from './hooks/useGameEngine.js'
 import SlotMachine from './components/SlotMachine/SlotMachine.jsx'
 import HowToWin from './components/HowToWin/HowToWin.jsx'
+import PlayByPlay from './components/PlayByPlay/PlayByPlay.jsx'
 import AboutUs from './components/AboutUs/AboutUs.jsx'
 import './App.css'
 
 export default function App() {
+  const engine = useGameEngine()
   const [page, setPage] = useState('game')
   const [theme, setTheme] = useState(() =>
     window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
@@ -35,7 +38,6 @@ export default function App() {
             About
           </button>
         </div>
-
         <button
           className="theme-toggle"
           onClick={toggleTheme}
@@ -45,11 +47,11 @@ export default function App() {
           {theme === 'dark' ? '☀︎' : '☽'}
         </button>
       </nav>
-
       {page === 'game' ? (
         <div className="game-layout">
           <HowToWin />
-          <SlotMachine />
+          <SlotMachine {...engine} />
+          <PlayByPlay log={engine.sessionData.log} />
         </div>
       ) : (
         <AboutUs />
