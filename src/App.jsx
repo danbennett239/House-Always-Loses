@@ -88,12 +88,11 @@ export default function App() {
           <div className="toast-area">
             <TrickToast event={activeToast} onDismiss={dismissToast} />
           </div>
-          {/* Centre column: machine only */}
+          {/* Centre column (row 1): machine. HowToWin placed in row 2 same column via CSS grid. */}
           <div className="machine-column">
             <SlotMachine {...engine} canSpin={engine.canSpin && !activeToast} reset={handleReset} onReelsSettled={handleReelsSettled} />
           </div>
           <PlayByPlay log={visibleLog} />
-          {/* Full-width row below the three columns */}
           <HowToWin />
         </div>
       ) : (

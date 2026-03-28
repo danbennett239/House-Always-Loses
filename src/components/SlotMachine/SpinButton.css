@@ -79,6 +79,24 @@
   transform: none;
 }
 
+.auto-roll-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  padding-top: 6px;
+}
+
+.auto-roll-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
 .balance-display {
   font-size: 14px;
   color: var(--text-secondary);

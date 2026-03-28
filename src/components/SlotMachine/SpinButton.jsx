@@ -4,7 +4,7 @@ import './SpinButton.css'
 const BET_INCREMENTS = [1, 5, 10, 15, 25, 50]
 const MIN_BET = 1
 
-export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled, spinning }) {
+export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled, spinning, autoRoll, setAutoRoll }) {
   const [draft, setDraft] = useState(String(bet))
   const [error, setError] = useState('')
 
@@ -14,6 +14,13 @@ export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled,
     setError('')
   }, [bet])
 
+  function handleChange(raw) {
+    // Allow only digits and a single decimal point with up to 2dp
+    const sanitised = raw.replace(/[^0-9.]/g, '').replace(/^(\d*\.?\d{0,2}).*$/, '$1')
+    setDraft(sanitised)
+    setError('')
+  }
+
   function commitDraft(raw) {
     const value = parseFloat(raw)
     if (isNaN(value) || value < MIN_BET) {
@@ -22,14 +29,16 @@ export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled,
       return
     }
     if (value > balance) {
-      setError(`Max £${balance.toFixed(2)}`)
-      setDraft(String(bet))
+      // Mirror reducer: clamp to max(MIN_BET, balance) so draft always matches what the engine will use
+      const capped = Math.round(Math.max(MIN_BET, balance) * 100) / 100
+      setDraft(String(capped))
+      setBet(capped)
       return
     }
-    const clamped = Math.round(value * 100) / 100
+    const rounded = Math.round(value * 100) / 100
     setError('')
-    setDraft(String(clamped))
-    setBet(clamped)
+    setDraft(String(rounded))
+    setBet(rounded)
   }
 
   function handleKeyDown(e) {
@@ -60,13 +69,11 @@ export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled,
           <input
             id="custom-bet"
             className="custom-bet-input"
-            type="number"
-            min={MIN_BET}
-            max={balance}
-            step="0.01"
+            type="text"
+            inputMode="decimal"
             value={draft}
             disabled={spinning}
-            onChange={e => { setDraft(e.target.value); setError('') }}
+            onChange={e => handleChange(e.target.value)}
             onBlur={e => commitDraft(e.target.value)}
             onKeyDown={handleKeyDown}
             aria-label="Custom bet amount in pounds"
@@ -79,6 +86,16 @@ export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled,
       <button className="spin-btn" onClick={onSpin} disabled={spinDisabled}>
         {spinning ? 'Spinning…' : 'SPIN'}
       </button>
+
+      <label className="auto-roll-label">
+        <input
+          type="checkbox"
+          className="auto-roll-checkbox"
+          checked={autoRoll}
+          onChange={e => setAutoRoll(e.target.checked)}
+        />
+        Auto Roll
+      </label>
 
       <div className="balance-display">Balance: £{balance.toFixed(2)}</div>
     </div>

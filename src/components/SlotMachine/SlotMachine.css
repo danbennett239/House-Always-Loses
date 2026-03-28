@@ -46,6 +46,27 @@
   position: relative;
 }
 
+/* ── Win state ── */
+@keyframes win-border-pulse {
+  0%   { box-shadow: 0 0 0px  transparent;        border-color: #2a2a2a; }
+  30%  { box-shadow: 0 0 40px var(--gold-glow);   border-color: var(--gold); }
+  60%  { box-shadow: 0 0 20px var(--gold-glow);   border-color: var(--gold); }
+  100% { box-shadow: 0 0 0px  transparent;        border-color: #2a2a2a; }
+}
+
+@keyframes win-title-flash {
+  0%, 100% { text-shadow: 0 0 20px var(--gold-glow); }
+  40%       { text-shadow: 0 0 40px var(--gold), 0 0 80px var(--gold-glow); }
+}
+
+.slot-machine[data-win] {
+  animation: win-border-pulse 1.2s ease-out forwards;
+}
+
+.slot-machine[data-win] .slot-title {
+  animation: win-title-flash 1.2s ease-out forwards;
+}
+
 .spin-counter {
   font-size: 11px;
   color: #444;
