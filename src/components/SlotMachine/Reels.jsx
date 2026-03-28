@@ -3,9 +3,9 @@ import { motion, animate, useMotionValue } from 'framer-motion'
 import { SYMBOLS } from '../../utils/probability.js'
 import './Reels.css'
 
-const REEL_SYMBOL_HEIGHT = 100
-const REEL_WIDTH         = 100   // must match .reel-window width in CSS
-const REEL_GAP           = 8     // must match gap in .reels-container in CSS
+const REEL_SYMBOL_HEIGHT = 70
+const REEL_WIDTH         = 70    // must match .reel-window width in CSS
+const REEL_GAP           = 6     // must match gap in .reels-container in CSS
 const STRIP_LENGTH       = 40
 const LOOP_SYMBOLS       = 20
 const LOOP_DURATION      = 0.7

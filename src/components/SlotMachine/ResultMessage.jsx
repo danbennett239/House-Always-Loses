@@ -4,7 +4,10 @@ import './ResultMessage.css'
 export default function ResultMessage({ lastResult, spinning }) {
   if (spinning || !lastResult) return <div className="result-placeholder" />
 
-  const { win, gross, net, isLDW } = lastResult
+  const { win, gross, net, isLDW, nearMiss } = lastResult
+
+  // Suppress result line for plain near-miss losses — the callout handles it
+  if (!win && nearMiss) return <div className="result-placeholder" />
 
   let label, className
   if (isLDW) {
