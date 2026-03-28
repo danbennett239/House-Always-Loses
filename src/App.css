@@ -1,8 +1,11 @@
 .app-layout {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   min-height: 100vh;
   gap: 24px;
   padding: 24px;
 }
+
+.app-layout > :first-child { justify-self: end; }
+.app-layout > :last-child  { justify-self: start; }
