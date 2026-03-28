@@ -4,6 +4,8 @@ import { SYMBOLS } from '../../utils/probability.js'
 import './Reels.css'
 
 const REEL_SYMBOL_HEIGHT = 100
+const REEL_WIDTH         = 100   // must match .reel-window width in CSS
+const REEL_GAP           = 8     // must match gap in .reels-container in CSS
 const STRIP_LENGTH       = 40
 const LOOP_SYMBOLS       = 20
 const LOOP_DURATION      = 0.7
@@ -11,6 +13,10 @@ const STOP_DELAY_STEP    = 0.5
 const DECEL_DURATION     = 0.55
 const LANDING_INDEX      = STRIP_LENGTH - 2
 const LANDING_Y          = -(LANDING_INDEX - 1) * REEL_SYMBOL_HEIGHT
+
+// Centre x of reel i, measured from the padding-box edge of .reels-container
+// (absolute children are offset from padding-box, so no need to add container padding)
+const reelCentreX = (i) => i * (REEL_WIDTH + REEL_GAP) + REEL_WIDTH / 2
 
 function buildStrip() {
   return Array.from({ length: STRIP_LENGTH }, () =>
@@ -122,10 +128,9 @@ export default function Reels({ reels, spinning, lastResult, onAllStopped }) {
 
   const { indices, color } = getPaylineInfo(reels, allStopped ? lastResult : null)
 
-  const reelCentreX = (i) => 12 + i * 108 + 50
-  const showLine    = indices.length >= 2 && allStopped
-  const lineLeft    = showLine ? reelCentreX(Math.min(...indices)) : 0
-  const lineWidth   = showLine ? reelCentreX(Math.max(...indices)) - lineLeft : 0
+  const showLine  = indices.length >= 2 && allStopped
+  const lineLeft  = showLine ? reelCentreX(Math.min(...indices)) : 0
+  const lineWidth = showLine ? reelCentreX(Math.max(...indices)) - lineLeft : 0
 
   return (
     <div className="reels-container">
@@ -145,7 +150,7 @@ export default function Reels({ reels, spinning, lastResult, onAllStopped }) {
         <motion.div
           key={`line-${lastResult?.gross}-${lastResult?.net}`}
           className="payline-line"
-          style={{ backgroundColor: color, left: lineLeft, top: 'calc(12px + 150px - 2px)' }}
+          style={{ backgroundColor: color, left: lineLeft, top: 'calc(50% - 2px)' }}
           initial={{ width: 0, opacity: 0 }}
           animate={{ width: lineWidth, opacity: 1 }}
           transition={{ duration: 0.35, ease: 'easeOut' }}

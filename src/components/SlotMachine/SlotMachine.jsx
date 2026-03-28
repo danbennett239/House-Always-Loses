@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import Reels from './Reels.jsx'
 import SpinButton from './SpinButton.jsx'
 import ResultMessage from './ResultMessage.jsx'
@@ -7,17 +7,18 @@ import './SlotMachine.css'
 
 export default function SlotMachine({ reels, spinning, lastResult, balance, bet, setBet, spin, canSpin, gameOver, reset, sessionData, onReelsSettled }) {
   const [reelsSettled, setReelsSettled] = useState(true)
+  const preSpinBalance = useRef(balance)
 
   const handleAllStopped = useCallback(() => {
     setReelsSettled(true)
     onReelsSettled?.()
   }, [onReelsSettled])
 
-  // Mark unsettled as soon as a spin starts
   const handleSpin = useCallback(() => {
+    preSpinBalance.current = balance
     setReelsSettled(false)
     spin()
-  }, [spin])
+  }, [spin, balance])
 
   return (
     <div className="slot-machine">
@@ -40,7 +41,7 @@ export default function SlotMachine({ reels, spinning, lastResult, balance, bet,
       <SpinButton
         bet={bet}
         setBet={setBet}
-        balance={reelsSettled ? balance : balance + (lastResult?.net ?? 0)}
+        balance={reelsSettled ? balance : preSpinBalance.current}
         onSpin={handleSpin}
         spinDisabled={!canSpin || !reelsSettled}
         spinning={spinning || !reelsSettled}
