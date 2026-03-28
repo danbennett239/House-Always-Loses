@@ -83,14 +83,14 @@ export default function App() {
       </nav>
 
       {page === 'game' ? (
-        <div className="game-layout" data-toast-active={activeToast ? 'true' : undefined}>
+        <div className="game-layout" data-toast-active={!!activeToast || undefined}>
           {/* Left column: trick callout lives here */}
           <div className="toast-area">
             <TrickToast event={activeToast} onDismiss={dismissToast} />
           </div>
           {/* Centre column: machine only */}
           <div className="machine-column">
-            <SlotMachine {...engine} reset={handleReset} onReelsSettled={handleReelsSettled} />
+            <SlotMachine {...engine} canSpin={engine.canSpin && !activeToast} reset={handleReset} onReelsSettled={handleReelsSettled} />
           </div>
           <PlayByPlay log={visibleLog} />
           {/* Full-width row below the three columns */}
