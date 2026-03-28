@@ -12,11 +12,12 @@
 }
 
 .pbp-title {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: var(--gold);
+  text-shadow: 0 0 10px var(--gold-glow);
   margin: 0;
   padding: 20px 24px 14px;
   border-bottom: 1px solid var(--border-card);
