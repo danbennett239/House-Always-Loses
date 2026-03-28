@@ -11,15 +11,11 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.45),
-    0 0 0 1px var(--glass-border);
+  box-shadow: none;
 }
 
 [data-theme="light"] .tt-card {
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.14),
-    0 0 0 1px var(--glass-border);
+  box-shadow: none;
 }
 
 /* Right-pointing arrow — tail on right edge of card, pointing toward machine */
@@ -105,11 +101,18 @@
   cursor: pointer;
   transition: opacity 0.15s, transform 0.15s;
   flex-shrink: 0;
+  animation: tt-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes tt-pulse {
+  0%, 100% { opacity: 1;    transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.96); }
 }
 
 .tt-dismiss:hover {
   opacity: 0.85;
   transform: translateY(-1px);
+  animation-play-state: paused;
 }
 
 .tt-hint {
