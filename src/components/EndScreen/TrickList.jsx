@@ -14,10 +14,10 @@ const TRICKS = [
   {
     id: 'house-edge',
     name: 'House Edge',
-    getStat: () => `${(HOUSE_EDGE * 100).toFixed(1)}% on every spin`,
+    getStat: () => `${(HOUSE_EDGE * 100).toFixed(1)}p lost per £1 bet`,
     getDetected: () => true,
     description: () =>
-      `This machine returns ${(RTP * 100).toFixed(1)}p per £1 bet. The house takes ${(HOUSE_EDGE * 100).toFixed(1)}p — silently, automatically, every spin.`,
+      `This machine returns ${(RTP * 100).toFixed(1)}p per £1 bet. The house keeps the other ${(HOUSE_EDGE * 100).toFixed(1)}p — silently, automatically, every spin.`,
   },
   {
     id: 'near-miss',

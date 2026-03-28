@@ -51,9 +51,9 @@ export function evaluateSpin(reels, bet) {
 // Re-export these so UI components stay in sync with the actual engine.
 const _probs = SYMBOLS.map(s => s.weight / totalWeight)
 const _p3 = _probs.reduce((sum, p) => sum + p ** 3, 0)
-// Only adjacent pairs (a=b or b=c) count as LDW wins now; a=c is a near-miss loss.
-// P(adjacent pair, not 3-of-a-kind) = 2 * sum(p^2) - 2 * sum(p^3) - P(a=c only)
-// Simpler: export constants are approximate and documented as such.
+// P(adjacent pair but not 3-of-a-kind) = P(a=b) + P(b=c) - 2·P(a=b=c)
+//   = 2·Σ(p²) - 2·Σ(p³)
+// a=c (near-miss) is excluded from LDW payouts and not counted here.
 const _p2adj = 2 * _probs.reduce((sum, p) => sum + p ** 2, 0) - 2 * _p3
 const _rtp3 = SYMBOLS.reduce((sum, s, i) => sum + _probs[i] ** 3 * s.payout, 0)
 export const RTP        = _rtp3 + _p2adj * 0.5
