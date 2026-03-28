@@ -1,20 +1,17 @@
-import { useReducer, useCallback } from 'react'
+import { useReducer, useCallback, useEffect, useRef } from 'react'
 import { spinReels, evaluateSpin, detectNearMiss } from '../utils/probability.js'
 
 const STARTING_BALANCE = 100
 const DEFAULT_BET = 1
 
-// Total animation duration before revealing result (ms)
-// Reel 0 stops at ~1800ms, reel 1 at ~2150ms, reel 2 at ~2500ms
 export const SPIN_RESOLVE_MS = 2700
 
 const initialState = {
   balance: STARTING_BALANCE,
   bet: DEFAULT_BET,
   spinning: false,
-  // pendingReels: available immediately so Reels can animate to target
   pendingReels: null,
-  // revealed after animation completes
+  pendingResult: null,
   reels: null,
   lastResult: null,
   sessionData: {
@@ -37,7 +34,6 @@ function reducer(state, action) {
     }
 
     case 'SPIN_START': {
-      // Pre-compute result so the animation can target the correct symbols
       const reels = spinReels()
       const result = evaluateSpin(reels, state.bet)
       return {
@@ -45,11 +41,14 @@ function reducer(state, action) {
         spinning: true,
         pendingReels: reels,
         pendingResult: result,
-        balance: state.balance - state.bet, // deduct bet immediately
+        balance: state.balance - state.bet,
       }
     }
 
     case 'SPIN_COMPLETE': {
+      // Guard: if pending state was somehow cleared, do nothing
+      if (!state.pendingReels || !state.pendingResult) return state
+
       const { pendingReels, pendingResult } = state
       const { gross, net, isLDW } = pendingResult
       const nearMiss = !pendingResult.win && detectNearMiss(pendingReels)
@@ -89,20 +88,25 @@ function reducer(state, action) {
 
 export function useGameEngine() {
   const [state, dispatch] = useReducer(reducer, initialState)
+  const timeoutRef = useRef(null)
+
+  // Clear timeout on unmount
+  useEffect(() => {
+    return () => clearTimeout(timeoutRef.current)
+  }, [])
 
   const setBet = useCallback((bet) => {
     dispatch({ type: 'SET_BET', bet })
   }, [])
 
-  const spinComplete = useCallback(() => {
-    dispatch({ type: 'SPIN_COMPLETE' })
-  }, [])
-
   const spin = useCallback(() => {
     if (state.spinning || state.balance < state.bet) return
     dispatch({ type: 'SPIN_START' })
-    setTimeout(spinComplete, SPIN_RESOLVE_MS)
-  }, [state.spinning, state.balance, state.bet, spinComplete])
+    clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(() => {
+      dispatch({ type: 'SPIN_COMPLETE' })
+    }, SPIN_RESOLVE_MS)
+  }, [state.spinning, state.balance, state.bet])
 
   const canSpin = !state.spinning && state.balance >= state.bet
 

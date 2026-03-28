@@ -61,8 +61,7 @@ function Reel({ targetSymbol, spinning, spinKey, stopDelay = 0 }) {
     )
 
     return () => animation.stop()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spinning, spinKey]) // re-run each new spin
+  }, [spinning, spinKey, stopDelay])
 
   return (
     <div className="reel-window">

@@ -37,7 +37,9 @@ export default function SpinButton({ bet, setBet, balance, onSpin, disabled }) {
         ))}
       </div>
 
+      <label className="sr-only" htmlFor="bet-custom-input">Custom bet amount</label>
       <input
+        id="bet-custom-input"
         className={`bet-custom${isCustomActive ? ' active' : ''}`}
         type="number"
         min={1}
