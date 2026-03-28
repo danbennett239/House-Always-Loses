@@ -37,8 +37,8 @@ function reducer(state, action) {
 
     case 'SPIN_COMPLETE': {
       const { reels, result } = action
-      const { gross, net, win, isLDW } = result
-      const nearMiss = !win && detectNearMiss(reels)
+      const { gross, net, isLDW } = result
+      const nearMiss = detectNearMiss(reels)
 
       const newBalance = Math.round((state.balance + net) * 100) / 100
       const sd = state.sessionData

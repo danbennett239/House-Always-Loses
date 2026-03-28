@@ -34,13 +34,13 @@ export default function HowToWin() {
       <section className="htw-section">
         <h3 className="htw-section-title">Match 2 — Partial Win</h3>
         <div className="htw-two-of-a-kind">
-          {/* Three reels, two matching — e.g. 🍒🍒🍋 */}
+          {/* Adjacent match on left (a=b) or right (b=c) — e.g. 🍒🍒🍋 or 🍋🍒🍒 */}
           <span className="htw-symbols" aria-hidden="true">
             {s0.emoji}{s0.emoji}{s1.emoji}
           </span>
           <span className="htw-multiplier">0.5×</span>
         </div>
-        <p className="htw-note">Any two matching symbols pay half your bet (net loss)</p>
+        <p className="htw-note">Two adjacent matching symbols (left–left or right–right) pay half your bet (net loss)</p>
       </section>
 
       <section className="htw-section">

@@ -1,12 +1,6 @@
 @keyframes titleEnter {
-  from {
-    opacity: 0;
-    letter-spacing: 12px;
-  }
-  to {
-    opacity: 1;
-    letter-spacing: 6px;
-  }
+  from { opacity: 0; letter-spacing: 12px; }
+  to   { opacity: 1; letter-spacing: 6px; }
 }
 
 @keyframes fadeUp {
@@ -14,39 +8,67 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes overlayEnter {
+@keyframes backdropEnter {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
+/* Full-viewport backdrop */
 .end-screen {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  border-radius: 20px;
-  background: linear-gradient(160deg, #1c1c1c 0%, #111 100%);
+  z-index: 100;
+  background: #0d0d0d;
+  overflow-y: auto;
+  animation: backdropEnter 0.4s ease forwards;
+}
+
+/* Centred column — middle third of the page */
+.end-screen-inner {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
   gap: 16px;
-  padding: 32px;
-  overflow-y: auto;
-  animation: overlayEnter 0.4s ease forwards;
-  z-index: 10;
+  width: min(560px, 100%);
+  margin: 0 auto;
+  padding: 64px 24px 80px;
 }
 
 .end-title {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 900;
   letter-spacing: 6px;
   text-transform: uppercase;
   color: #ff6b6b;
-  margin: 0;
+  margin: 0 0 8px;
+  text-align: center;
   opacity: 0;
   animation: titleEnter 0.6s ease forwards;
 }
 
 .end-reset-btn {
+  align-self: center;
+  width: 200px;
+  height: 56px;
+  border-radius: 28px;
+  border: none;
+  background: linear-gradient(135deg, #d4af37, #f0c040);
+  color: #111;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
   opacity: 0;
   animation: fadeUp 0.4s ease forwards;
+}
+
+.end-reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6);
+}
+
+.end-reset-btn:active {
+  transform: translateY(0);
 }
