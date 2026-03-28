@@ -69,6 +69,14 @@ function Reel({ targetSymbol, spinning, stopDelay, onStopped, highlighted, color
     })
   }, [spinning, y])
 
+  // Unmount-only cleanup — stops loop and pending timeout if component is removed mid-spin
+  useEffect(() => {
+    return () => {
+      if (loopCtrl.current) { loopCtrl.current.stop(); loopCtrl.current = null }
+      clearTimeout(stopTimeout.current)
+    }
+  }, [])
+
   useEffect(() => {
     const justLanded = wasSpinning.current && !spinning
     wasSpinning.current = spinning
@@ -83,7 +91,7 @@ function Reel({ targetSymbol, spinning, stopDelay, onStopped, highlighted, color
       animate(y, LANDING_Y, {
         duration: DECEL_DURATION,
         ease: [0.2, 0.8, 0.4, 1],
-        onComplete: onStopped,
+        onComplete: () => requestAnimationFrame(onStopped),
       })
     }, stopDelay * 1000)
 
