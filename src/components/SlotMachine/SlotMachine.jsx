@@ -1,13 +1,10 @@
-import { useGameEngine } from '../../hooks/useGameEngine.js'
 import Reels from './Reels.jsx'
 import SpinButton from './SpinButton.jsx'
 import ResultMessage from './ResultMessage.jsx'
 import EndScreen from '../EndScreen/EndScreen.jsx'
 import './SlotMachine.css'
 
-export default function SlotMachine() {
-  const { reels, spinning, lastResult, balance, bet, setBet, spin, canSpin, gameOver, reset, sessionData } = useGameEngine()
-
+export default function SlotMachine({ reels, spinning, lastResult, balance, bet, setBet, spin, canSpin, gameOver, reset, sessionData }) {
   return (
     <div className="slot-machine">
       <div className="slot-machine-header">

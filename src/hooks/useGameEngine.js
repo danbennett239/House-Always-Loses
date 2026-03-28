@@ -21,6 +21,7 @@ function getInitialState() {
       ldwCount: 0,
       bigWins: 0,
       spinHistory: [],    // [{ spin, net, balance }]
+      log: [],            // [{ spin, bet, gross, net, isLDW, nearMiss, balance }]
     },
   }
 }
@@ -62,6 +63,18 @@ function reducer(state, action) {
           spinHistory: [
             ...sd.spinHistory,
             { spin: spinNum, net, balance: newBalance },
+          ],
+          log: [
+            ...sd.log,
+            {
+              spin: spinNum,
+              bet: state.bet,
+              gross,
+              net,
+              isLDW,
+              nearMiss,
+              balance: newBalance,
+            },
           ],
         },
       }

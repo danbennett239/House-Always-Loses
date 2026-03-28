@@ -1,0 +1,140 @@
+.pbp-panel {
+  display: flex;
+  flex-direction: column;
+  width: 440px;
+  height: 600px;
+  background: linear-gradient(160deg, #1c1c1c 0%, #111 100%);
+  border-radius: 20px;
+  border: 2px solid #2a2a2a;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+  overflow: hidden;
+}
+
+.pbp-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #666;
+  margin: 0;
+  padding: 20px 24px 14px;
+  border-bottom: 1px solid #252525;
+  flex-shrink: 0;
+}
+
+.pbp-empty {
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+  padding: 48px 24px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.pbp-list {
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a2a #111;
+}
+
+.pbp-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pbp-list::-webkit-scrollbar-track {
+  background: #111;
+}
+
+.pbp-list::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 3px;
+}
+
+/* ── Individual entry ── */
+.pbp-entry {
+  display: flex;
+  gap: 14px;
+  padding: 10px 24px;
+  border-bottom: 2px solid #252525;
+  border-left: 3px solid transparent;
+}
+
+.pbp-entry:last-of-type {
+  border-bottom: none;
+}
+
+.pbp-entry--flagged {
+  background: rgba(255, 107, 107, 0.06);
+  border-left-color: #ff6b6b;
+}
+
+.pbp-spin-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: #aaa;
+  padding-top: 2px;
+  flex-shrink: 0;
+  width: 30px;
+}
+
+.pbp-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Staked line */
+.pbp-bet-line {
+  font-size: 13px;
+  font-weight: 600;
+  color: #999;
+  margin-bottom: 2px;
+}
+
+/* Machine says / Reality rows */
+.pbp-machine-line,
+.pbp-truth-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pbp-machine-label,
+.pbp-truth-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #777;
+  flex-shrink: 0;
+}
+
+.pbp-machine-value {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.pbp-machine-value.pbp-label--win  { color: #51cf66; }
+.pbp-machine-value.pbp-label--ldw  { color: #51cf66; }
+.pbp-machine-value.pbp-label--loss { color: #777; }
+
+.pbp-truth-value {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.pbp-truth-value.pbp-truth--win     { color: #51cf66; }
+.pbp-truth-value.pbp-truth--loss    { color: #ff6b6b; }
+.pbp-truth-value.pbp-truth--neutral { color: #888; }
+
+/* Annotation */
+.pbp-note {
+  font-size: 12px;
+  color: #cc5555;
+  margin: 4px 0 0;
+  line-height: 1.5;
+  border-top: 1px solid rgba(255,107,107,0.15);
+  padding-top: 6px;
+}
