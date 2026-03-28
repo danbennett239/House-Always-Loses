@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import Reels from './Reels.jsx'
 import SpinButton from './SpinButton.jsx'
 import ResultMessage from './ResultMessage.jsx'
@@ -8,8 +8,11 @@ import './SlotMachine.css'
 
 export default function SlotMachine({ reels, spinning, lastResult, balance, bet, setBet, spin, canSpin, gameOver, reset, sessionData, onReelsSettled }) {
   const [reelsSettled, setReelsSettled] = useState(true)
+  const [autoRoll, setAutoRoll] = useState(false)
   const preSpinBalance = useRef(balance)
   const reelsRef = useRef(null)
+  // Only auto-roll after the user has manually spun at least once with auto-roll on
+  const autoRollArmed = useRef(false)
 
   const handleAllStopped = useCallback(() => {
     setReelsSettled(true)
@@ -19,8 +22,17 @@ export default function SlotMachine({ reels, spinning, lastResult, balance, bet,
   const handleSpin = useCallback(() => {
     preSpinBalance.current = balance
     setReelsSettled(false)
+    autoRollArmed.current = true
     spin()
   }, [spin, balance])
+
+  // Auto-roll: wait 1.5s after reels settle then fire next spin
+  useEffect(() => {
+    if (!autoRoll || !reelsSettled || !canSpin || gameOver) return
+    if (!autoRollArmed.current) return
+    const t = setTimeout(handleSpin, 1500)
+    return () => clearTimeout(t)
+  }, [autoRoll, reelsSettled, canSpin, gameOver, handleSpin])
 
   const isWin = reelsSettled && lastResult?.win && !lastResult?.isLDW
 
@@ -51,6 +63,8 @@ export default function SlotMachine({ reels, spinning, lastResult, balance, bet,
         onSpin={handleSpin}
         spinDisabled={!canSpin || !reelsSettled}
         spinning={spinning || !reelsSettled}
+        autoRoll={autoRoll}
+        setAutoRoll={setAutoRoll}
       />
 
       <div className="spin-counter">

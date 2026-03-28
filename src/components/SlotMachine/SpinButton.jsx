@@ -4,7 +4,7 @@ import './SpinButton.css'
 const BET_INCREMENTS = [1, 5, 10, 15, 25, 50]
 const MIN_BET = 1
 
-export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled, spinning }) {
+export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled, spinning, autoRoll, setAutoRoll }) {
   const [draft, setDraft] = useState(String(bet))
   const [error, setError] = useState('')
 
@@ -85,6 +85,16 @@ export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled,
       <button className="spin-btn" onClick={onSpin} disabled={spinDisabled}>
         {spinning ? 'Spinning…' : 'SPIN'}
       </button>
+
+      <label className="auto-roll-label">
+        <input
+          type="checkbox"
+          className="auto-roll-checkbox"
+          checked={autoRoll}
+          onChange={e => setAutoRoll(e.target.checked)}
+        />
+        Auto Roll
+      </label>
 
       <div className="balance-display">Balance: £{balance.toFixed(2)}</div>
     </div>
