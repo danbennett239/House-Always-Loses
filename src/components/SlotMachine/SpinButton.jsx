@@ -34,8 +34,7 @@ export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled,
 
   function handleKeyDown(e) {
     if (e.key === 'Enter') {
-      e.target.blur()
-      commitDraft(draft)
+      e.target.blur() // blur fires onBlur → commitDraft; don't call it again here
     }
   }
 
@@ -64,7 +63,7 @@ export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled,
             type="number"
             min={MIN_BET}
             max={balance}
-            step="1"
+            step="0.01"
             value={draft}
             disabled={spinning}
             onChange={e => { setDraft(e.target.value); setError('') }}
