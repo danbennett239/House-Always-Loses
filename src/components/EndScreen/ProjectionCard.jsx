@@ -36,7 +36,7 @@ export default function ProjectionCard({ sessionData }) {
         </div>
         <div className="proj-summary-item">
           <span className={`proj-summary-value ${netResult < 0 ? 'proj-value--loss' : 'proj-value--win'}`}>
-            {netResult >= 0 ? '+' : ''}£{netResult.toFixed(2)}
+            {netResult >= 0 ? '+' : '-'}£{Math.abs(netResult).toFixed(2)}
           </span>
           <span className="proj-summary-label">net result</span>
         </div>
