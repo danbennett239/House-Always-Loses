@@ -24,7 +24,7 @@ export default function HowToWin() {
         </ul>
       </div>
 
-      {/* Col 2: Match 2 + How to Bet */}
+      {/* Col 2: Match 2 — Partial + House Edge */}
       <div className="htw-col htw-col--right">
         <div className="htw-sub-section">
           <h3 className="htw-section-title">Match 2 — Partial</h3>

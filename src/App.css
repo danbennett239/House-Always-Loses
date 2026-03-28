@@ -118,9 +118,11 @@
     gap: 14px;
   }
 
-  /* Hide the toast column — toast becomes an overlay on mobile */
+  /* Collapse the toast column — the fixed-positioned .tt-card still renders */
   .toast-area {
-    display: none;
+    width: 0;
+    overflow: visible;
+    padding-top: 0;
   }
 
   .machine-column {
