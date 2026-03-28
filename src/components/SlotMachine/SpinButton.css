@@ -87,6 +87,7 @@
   color: var(--text-secondary);
   cursor: pointer;
   user-select: none;
+  padding-top: 6px;
 }
 
 .auto-roll-checkbox {
