@@ -11,16 +11,16 @@
 }
 
 .result-win {
-  color: #4caf50;
+  color: var(--green);
 }
 
 /* LDW looks like a win — same green, same style. That's the point. */
 .result-ldw {
-  color: #4caf50;
+  color: var(--green);
 }
 
 .result-loss {
-  color: #666;
+  color: var(--text-dim);
   font-weight: 400;
   font-size: 14px;
   padding-top: 4px;

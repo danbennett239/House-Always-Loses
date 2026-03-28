@@ -1,11 +1,85 @@
-.app-layout {
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Nav ─────────────────────────────────────────────── */
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--nav-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: background 0.3s, border-color 0.3s;
+}
+.app-nav-tabs {
+  display: flex;
+  gap: 6px;
+}
+.app-nav-btn {
+  padding: 7px 22px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.app-nav-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.app-nav-btn.active {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: var(--gold-bg);
+}
+
+/* ── Theme toggle ───────────────────────────────────── */
+.theme-toggle {
+  position: absolute;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.2s;
+}
+.theme-toggle:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: var(--gold-bg);
+  transform: rotate(20deg);
+}
+
+/* ── Game layout ────────────────────────────────────── */
+.game-layout {
+  flex: 1;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  min-height: 100vh;
   gap: 24px;
   padding: 24px;
 }
 
-.app-layout > :first-child { justify-self: end; }
-.app-layout > :last-child  { justify-self: start; }
+.game-layout > :first-child { justify-self: end; }
+.game-layout > :last-child  { justify-self: start; }
