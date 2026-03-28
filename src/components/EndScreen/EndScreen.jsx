@@ -1,20 +1,27 @@
-import EndCard from './EndCard.jsx'
+import EndCard, { CARD_DELAY_START, CARD_DELAY_STEP } from './EndCard.jsx'
 import ProjectionCard from './ProjectionCard.jsx'
 import './EndScreen.css'
 
-// To add a new card: append an <EndCard index={n}> and bump CARD_COUNT.
-const CARD_COUNT = 1
+// Add entries here to introduce new cards. Index is derived from position.
+function buildCards(sessionData) {
+  return [
+    { title: 'Your Session', content: <ProjectionCard sessionData={sessionData} /> },
+  ]
+}
 
 export default function EndScreen({ sessionData, onReset }) {
-  const resetDelay = `${0.6 + CARD_COUNT * 0.5}s`
+  const cards = buildCards(sessionData)
+  const resetDelay = `${CARD_DELAY_START + cards.length * CARD_DELAY_STEP}s`
 
   return (
     <div className="end-screen">
       <h2 className="end-title">Game Over</h2>
 
-      <EndCard index={0} title="Your Session">
-        <ProjectionCard sessionData={sessionData} />
-      </EndCard>
+      {cards.map(({ title, content }, i) => (
+        <EndCard key={title} index={i} title={title}>
+          {content}
+        </EndCard>
+      ))}
 
       <button
         className="spin-btn end-reset-btn"

@@ -1,11 +1,12 @@
-const THEORETICAL_RTP = 0.85         // 85p returned per £1 bet
-const SPINS_PER_HOUR  = 600          // ~600 spins/hr is typical for slots
-const HOURS_PER_SESSION = 4
-const SESSIONS_PER_YEAR = 50
+const THEORETICAL_RTP = 0.85
+
+export const SPINS_PER_HOUR    = 600   // ~600 spins/hr is typical for slots
+export const HOURS_PER_SESSION = 4
+export const SESSIONS_PER_YEAR = 50
 
 // Minimum spins before trusting experienced RTP for projections.
 // Below this threshold the sample is too small and we fall back to theoretical.
-const MIN_SPINS_FOR_EXPERIENCED_RTP = 10
+export const MIN_SPINS_FOR_EXPERIENCED_RTP = 10
 
 // Returns the RTP the player has actually experienced this session.
 // Falls back to theoretical until MIN_SPINS_FOR_EXPERIENCED_RTP spins have been made.
@@ -43,8 +44,8 @@ export function projectLifetime(sessionData) {
       rtp: actualRTP,
       ...project(avgBetPerSpin, 1 - actualRTP),
     },
-    // Convenience fields for display
-    returnPerPound: actualRTP,
+    // true once the sample is large enough to trust experienced RTP
+    usingExperiencedRTP: totalSpins >= MIN_SPINS_FOR_EXPERIENCED_RTP,
     lossToDate: -netBalance,       // positive = net loss, negative = net win
     avgBetPerSpin,
   }

@@ -1,13 +1,18 @@
-import { projectLifetime } from '../../utils/projections.js'
+import { projectLifetime, SPINS_PER_HOUR, HOURS_PER_SESSION, SESSIONS_PER_YEAR } from '../../utils/projections.js'
 import './ProjectionCard.css'
 
 function ProjectionRow({ label, value }) {
+  const isZero     = value === 0
   const isNegative = value < 0
+  const styleClass = isZero ? '' : isNegative ? 'proj-value--win' : 'proj-value--loss'
+  const prefix     = isZero ? '' : isNegative ? '+' : '-'
+  const display    = Math.abs(value).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
   return (
     <div className="proj-row">
       <span className="proj-label">{label}</span>
-      <span className={`proj-value ${isNegative ? 'proj-value--win' : 'proj-value--loss'}`}>
-        {isNegative ? '+' : '-'}£{Math.abs(value).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      <span className={`proj-value ${styleClass}`}>
+        {prefix}£{display}
       </span>
     </div>
   )
@@ -40,17 +45,23 @@ export default function ProjectionCard({ sessionData }) {
       {proj && (
         <>
           <div className="proj-rtp">
-            You got back <strong>{(proj.experienced.rtp * 100).toFixed(1)}p</strong> for every £1 you bet
+            {proj.usingExperiencedRTP
+              ? <>You got back <strong>{(proj.experienced.rtp * 100).toFixed(1)}p</strong> for every £1 you bet</>
+              : <>Too few spins for a personal rate — projections use the <strong>claimed {(proj.theoretical.rtp * 100).toFixed(0)}%</strong> RTP</>
+            }
           </div>
 
           <div className="proj-rows">
-            <ProjectionRow label="Per hour"           value={proj.experienced.lossPerHour} />
-            <ProjectionRow label="Per session (4 hr)" value={proj.experienced.lossPerSession} />
-            <ProjectionRow label="Per year"           value={proj.experienced.lossPerYear} />
-            <ProjectionRow label="Over 10 years"      value={proj.experienced.lossPerDecade} />
+            <ProjectionRow label="Per hour"            value={proj.experienced.lossPerHour} />
+            <ProjectionRow label={`Per session (${HOURS_PER_SESSION} hr)`} value={proj.experienced.lossPerSession} />
+            <ProjectionRow label={`Per year (${SESSIONS_PER_YEAR} sessions)`} value={proj.experienced.lossPerYear} />
+            <ProjectionRow label="Over 10 years"       value={proj.experienced.lossPerDecade} />
           </div>
 
-          <p className="proj-note">Based on your actual rate · ~600 spins/hr · 4 hr sessions · 50×/yr</p>
+          <p className="proj-note">
+            {proj.usingExperiencedRTP ? 'Based on your actual rate' : 'Based on claimed RTP'}
+            {` · ~${SPINS_PER_HOUR} spins/hr · ${HOURS_PER_SESSION} hr sessions · ${SESSIONS_PER_YEAR}×/yr`}
+          </p>
         </>
       )}
     </div>
