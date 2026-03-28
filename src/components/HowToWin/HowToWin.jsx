@@ -1,13 +1,23 @@
+import { SYMBOLS } from '../../utils/probability.js'
 import './HowToWin.css'
 
-const PAYOUTS = [
-  { symbol: '🍒', name: 'Cherry',  multiplier: 2,  twoOf: true  },
-  { symbol: '🍋', name: 'Lemon',   multiplier: 3,  twoOf: true  },
-  { symbol: '🍊', name: 'Orange',  multiplier: 4,  twoOf: true  },
-  { symbol: '🍇', name: 'Plum',    multiplier: 6,  twoOf: true  },
-  { symbol: '🔔', name: 'Bell',    multiplier: 15, twoOf: true  },
-  { symbol: '7️⃣', name: 'Seven',   multiplier: 50, twoOf: true  },
-]
+// Compute actual RTP from the engine's symbol weights and payouts.
+// Three of a kind: P(s,s,s) * payout_s
+// Two of a kind:   P(exactly two match) * 0.5
+const totalWeight = SYMBOLS.reduce((sum, s) => sum + s.weight, 0)
+const probs = SYMBOLS.map(s => s.weight / totalWeight)
+
+const p3 = probs.reduce((sum, p) => sum + p ** 3, 0)
+const p2 = 3 * probs.reduce((sum, p) => sum + p ** 2, 0) - 3 * p3
+
+const rtp3 = SYMBOLS.reduce((sum, s, i) => sum + probs[i] ** 3 * s.payout, 0)
+const rtp  = rtp3 + p2 * 0.5
+
+const HOUSE_EDGE_PCT = Math.round((1 - rtp) * 100)
+const RETURN_PER_POUND = rtp.toFixed(2)
+
+// First symbol in SYMBOLS used as the "odd one out" in the match-2 example
+const [s0, s1] = SYMBOLS
 
 export default function HowToWin() {
   return (
@@ -18,13 +28,16 @@ export default function HowToWin() {
         <h3 className="htw-section-title">Match 3 — Full Win</h3>
         <p className="htw-note">All three reels show the same symbol</p>
         <ul className="htw-payout-list">
-          {PAYOUTS.map(({ symbol, name, multiplier }) => (
-            <li key={name} className="htw-payout-row">
-              <span className="htw-symbols">
-                {symbol}{symbol}{symbol}
+          {SYMBOLS.map(({ id, emoji, payout }) => (
+            <li key={id} className="htw-payout-row">
+              <span
+                className="htw-symbols"
+                aria-hidden="true"
+              >
+                {emoji}{emoji}{emoji}
               </span>
-              <span className="htw-label">{name}</span>
-              <span className="htw-multiplier">{multiplier}×</span>
+              <span className="htw-label">{id.charAt(0).toUpperCase() + id.slice(1)}</span>
+              <span className="htw-multiplier">{payout}×</span>
             </li>
           ))}
         </ul>
@@ -33,10 +46,13 @@ export default function HowToWin() {
       <section className="htw-section">
         <h3 className="htw-section-title">Match 2 — Partial Win</h3>
         <div className="htw-two-of-a-kind">
-          <span className="htw-symbols">🍒🍒&nbsp;&nbsp;🍇🍇</span>
+          {/* Three reels, two matching — e.g. 🍒🍒🍋 */}
+          <span className="htw-symbols" aria-hidden="true">
+            {s0.emoji}{s0.emoji}{s1.emoji}
+          </span>
           <span className="htw-multiplier">0.5×</span>
         </div>
-        <p className="htw-note">Any two matching symbols pay half your bet</p>
+        <p className="htw-note">Any two matching symbols pay half your bet (net loss)</p>
       </section>
 
       <section className="htw-section">
@@ -50,8 +66,8 @@ export default function HowToWin() {
 
       <div className="htw-rtp-badge">
         <span className="htw-rtp-label">House Edge</span>
-        <span className="htw-rtp-value">15%</span>
-        <span className="htw-rtp-sub">£0.85 returned per £1 bet on average</span>
+        <span className="htw-rtp-value">{HOUSE_EDGE_PCT}%</span>
+        <span className="htw-rtp-sub">£{RETURN_PER_POUND} returned per £1 bet on average</span>
       </div>
     </aside>
   )
