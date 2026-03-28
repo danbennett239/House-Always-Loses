@@ -1,0 +1,63 @@
+.trick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.trick-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.trick-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.trick-item:first-child {
+  padding-top: 0;
+}
+
+.trick-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.trick-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.trick-stat {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+}
+
+.trick-stat--detected {
+  color: #ff6b6b;
+}
+
+.trick-description {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.trick-item--detected .trick-name {
+  color: #e0e0e0;
+}
+
+.trick-item--inactive .trick-name {
+  color: #555;
+}
+
+.trick-item--inactive .trick-description {
+  color: #444;
+}
