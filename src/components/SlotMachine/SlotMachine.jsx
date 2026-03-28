@@ -10,8 +10,8 @@ export default function SlotMachine() {
   return (
     <div className="slot-machine">
       <div className="slot-machine-header">
-        <h1 className="slot-title">Lucky Reels</h1>
-        <span className="slot-tagline">Feel the thrill</span>
+        <h1 className="slot-title">Superman Shlops</h1>
+        <span className="slot-tagline">Shlops for me, Shlops for you</span>
       </div>
 
       <div className="reels-wrapper">
