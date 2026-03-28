@@ -1,0 +1,302 @@
+/* ─── Page shell ─────────────────────────────────────────── */
+.au-page {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 32px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ─── Hero ──────────────────────────────────────────────── */
+.au-hero {
+  padding: 96px 0 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.au-hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  will-change: transform, opacity;
+}
+
+.au-eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.au-hero-title {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  max-width: 720px;
+}
+
+.au-hero-body {
+  font-size: 17px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 540px;
+}
+
+.au-hero-scroll-hint {
+  margin-top: 12px;
+  font-size: 20px;
+  color: var(--text-muted);
+}
+
+/* ─── Stats ─────────────────────────────────────────────── */
+.au-stats-section {
+  padding: 0 0 80px;
+}
+
+.au-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 680px) {
+  .au-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .au-hero-title { font-size: 36px; }
+  .au-page       { padding: 0 20px 80px; }
+}
+
+.au-stat-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.au-stat-card:hover {
+  background: var(--glass-hover);
+  border-color: var(--glass-border-hover);
+}
+
+.au-stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.au-stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ─── Divider ───────────────────────────────────────────── */
+.au-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-border-hover) 20%, var(--glass-border-hover) 80%, transparent);
+  margin: 0 0 80px;
+}
+
+/* ─── Sections ──────────────────────────────────────────── */
+.au-section {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-bottom: 80px;
+}
+
+.au-section-eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.au-section-title {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--text-primary);
+  max-width: 600px;
+}
+
+.au-section-body {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  max-width: 520px;
+  margin-top: 12px;
+}
+
+/* ─── Live chip ─────────────────────────────────────────── */
+.au-live-chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #000;
+  background: var(--gold);
+  border-radius: 20px;
+  padding: 3px 9px;
+  vertical-align: middle;
+}
+
+/* ─── Tricks grid ───────────────────────────────────────── */
+.au-tricks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.au-trick-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.au-trick-card:hover {
+  background: var(--glass-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-3px);
+}
+
+.au-trick-card--live {
+  border-color: rgba(212, 175, 55, 0.25);
+  background: var(--gold-bg-subtle);
+}
+
+[data-theme="light"] .au-trick-card--live {
+  border-color: rgba(154, 120, 0, 0.2);
+}
+
+.au-trick-card--live:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+}
+
+[data-theme="light"] .au-trick-card--live:hover {
+  border-color: rgba(154, 120, 0, 0.4);
+}
+
+.au-trick-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.au-trick-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.au-trick-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.au-trick-body {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* ─── Help / Resources ──────────────────────────────────── */
+.au-help-section {
+  padding-bottom: 0;
+}
+
+.au-resources {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.au-resource-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 28px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  flex-wrap: wrap;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.au-resource-card:hover {
+  background: var(--glass-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+}
+
+.au-resource-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.au-resource-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.au-resource-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.au-resource-phone {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ─── Footer glow ───────────────────────────────────────── */
+.au-footer-glow {
+  position: fixed;
+  bottom: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse at center, var(--gold-glow) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
