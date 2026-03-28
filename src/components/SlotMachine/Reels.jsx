@@ -1,87 +1,92 @@
-import { useEffect, useRef } from 'react'
-import { motion, animate } from 'framer-motion'
+import { useLayoutEffect, useRef } from 'react'
+import { animate } from 'framer-motion'
 import { SYMBOLS } from '../../utils/probability.js'
 import './Reels.css'
 
-const REEL_SYMBOL_HEIGHT = 100 // px per symbol in the strip
-const VISIBLE_SYMBOLS = 3      // how many rows are visible in the window
+const SYMBOL_H = 100
+const STRIP_LEN = 40
+const LANDING_INDEX = 36 // symbol at this index is the target
 
-// Build a long shuffled strip for the illusion of spinning
-function buildStrip(length = 30) {
-  const strip = []
-  for (let i = 0; i < length; i++) {
-    strip.push(SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)])
-  }
-  return strip
+// y value that centres symbol[LANDING_INDEX] in the middle visible row
+const LANDING_Y = 100 - LANDING_INDEX * SYMBOL_H  // -3500
+
+// Fast-scroll stops here before decelerating to landing
+const MID_SCROLL_Y = -(SYMBOL_H * 28)             // -2800
+
+// Stop delays per reel (seconds) — cascading halt effect
+const STOP_DELAYS = [0, 0.35, 0.7]
+
+function buildStrip(target) {
+  return Array.from({ length: STRIP_LEN }, (_, i) =>
+    i === LANDING_INDEX
+      ? target
+      : SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]
+  )
 }
 
-function Reel({ targetSymbol, spinning, delay = 0 }) {
-  const stripRef = useRef(buildStrip())
-  const yRef = useRef(null)
+function Reel({ targetSymbol, spinning, spinKey, stopDelay = 0 }) {
   const containerRef = useRef(null)
+  // Compute strip synchronously during render so the DOM is correct
+  // before useLayoutEffect fires
+  const stripRef = useRef(null)
+  const lastSpinKey = useRef(-1)
 
-  useEffect(() => {
-    if (!spinning) return
+  if (spinning && targetSymbol && spinKey !== lastSpinKey.current) {
+    lastSpinKey.current = spinKey
+    stripRef.current = buildStrip(targetSymbol)
+  }
 
-    const strip = stripRef.current
-    const totalHeight = strip.length * REEL_SYMBOL_HEIGHT
-
-    // Kick the reel into a fast scroll
-    if (containerRef.current) {
-      animate(containerRef.current, { y: -totalHeight + REEL_SYMBOL_HEIGHT }, {
-        duration: 0,
-      })
-    }
-
-    animate(containerRef.current, { y: 0 }, {
-      duration: 1.4 + delay * 0.3,
-      ease: [0.1, 0.8, 0.5, 1],
-    })
-  }, [spinning, delay])
-
-  useEffect(() => {
-    if (spinning || !targetSymbol || !containerRef.current) return
-
-    // After spin: snap so the target symbol lands in the middle visible row
-    const strip = stripRef.current
-    // Place target at a fixed landing position near the end of the strip
-    const landingIndex = strip.length - 2
-    strip[landingIndex] = targetSymbol
-    stripRef.current = [...strip]
-
-    const landingY = -(landingIndex - 1) * REEL_SYMBOL_HEIGHT
-
-    animate(containerRef.current, { y: landingY }, {
-      duration: 0.25 + delay * 0.15,
-      ease: 'easeOut',
-      delay: delay * 0.1,
-    })
-  }, [spinning, targetSymbol, delay])
+  // Initialise strip on first render
+  if (!stripRef.current) {
+    stripRef.current = buildStrip(SYMBOLS[0])
+  }
 
   const strip = stripRef.current
 
+  useLayoutEffect(() => {
+    if (!spinning || !containerRef.current) return
+
+    // Reset strip to top before animating
+    containerRef.current.style.transform = 'translateY(0px)'
+
+    const animation = animate(
+      containerRef.current,
+      { y: [0, MID_SCROLL_Y, LANDING_Y] },
+      {
+        duration: 1.8 + stopDelay,
+        times: [0, 0.72, 1],
+        // linear fast scroll → cubic decelerate into landing
+        ease: ['linear', [0.15, 0.85, 0.35, 1]],
+      }
+    )
+
+    return () => animation.stop()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spinning, spinKey]) // re-run each new spin
+
   return (
     <div className="reel-window">
-      <motion.div className="reel-strip" ref={containerRef}>
+      <div className="reel-strip" ref={containerRef}>
         {strip.map((sym, i) => (
           <div key={i} className="reel-cell">
             <span className="reel-emoji">{sym.emoji}</span>
           </div>
         ))}
-      </motion.div>
+      </div>
     </div>
   )
 }
 
-export default function Reels({ reels, spinning }) {
+export default function Reels({ targetReels, spinning, spinKey }) {
   return (
     <div className="reels-container">
       {[0, 1, 2].map((i) => (
         <Reel
           key={i}
-          targetSymbol={reels ? reels[i] : null}
+          targetSymbol={targetReels ? targetReels[i] : null}
           spinning={spinning}
-          delay={i}
+          spinKey={spinKey}
+          stopDelay={STOP_DELAYS[i]}
         />
       ))}
     </div>

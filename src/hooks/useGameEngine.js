@@ -4,21 +4,28 @@ import { spinReels, evaluateSpin, detectNearMiss } from '../utils/probability.js
 const STARTING_BALANCE = 100
 const DEFAULT_BET = 1
 
+// Total animation duration before revealing result (ms)
+// Reel 0 stops at ~1800ms, reel 1 at ~2150ms, reel 2 at ~2500ms
+export const SPIN_RESOLVE_MS = 2700
+
 const initialState = {
   balance: STARTING_BALANCE,
   bet: DEFAULT_BET,
-  reels: null,          // null = not yet spun
   spinning: false,
-  lastResult: null,     // { win, gross, net, isLDW }
+  // pendingReels: available immediately so Reels can animate to target
+  pendingReels: null,
+  // revealed after animation completes
+  reels: null,
+  lastResult: null,
   sessionData: {
     totalSpins: 0,
     totalWagered: 0,
     totalWon: 0,
-    netBalance: 0,      // cumulative net vs starting balance
+    netBalance: 0,
     nearMisses: 0,
     ldwCount: 0,
     bigWins: 0,
-    spinHistory: [],    // [{ spin, net, balance }]
+    spinHistory: [],
   },
 }
 
@@ -29,23 +36,35 @@ function reducer(state, action) {
       return { ...state, bet }
     }
 
-    case 'SPIN_START':
-      return { ...state, spinning: true }
+    case 'SPIN_START': {
+      // Pre-compute result so the animation can target the correct symbols
+      const reels = spinReels()
+      const result = evaluateSpin(reels, state.bet)
+      return {
+        ...state,
+        spinning: true,
+        pendingReels: reels,
+        pendingResult: result,
+        balance: state.balance - state.bet, // deduct bet immediately
+      }
+    }
 
     case 'SPIN_COMPLETE': {
-      const { reels, result } = action
-      const { gross, net, win, isLDW } = result
-      const nearMiss = !win && detectNearMiss(reels)
+      const { pendingReels, pendingResult } = state
+      const { gross, net, isLDW } = pendingResult
+      const nearMiss = !pendingResult.win && detectNearMiss(pendingReels)
 
-      const newBalance = state.balance + net
+      const newBalance = state.balance + gross
       const sd = state.sessionData
       const spinNum = sd.totalSpins + 1
 
       return {
         ...state,
         spinning: false,
-        reels,
-        lastResult: result,
+        reels: pendingReels,
+        lastResult: pendingResult,
+        pendingReels: null,
+        pendingResult: null,
         balance: newBalance,
         sessionData: {
           totalSpins: spinNum,
@@ -75,18 +94,15 @@ export function useGameEngine() {
     dispatch({ type: 'SET_BET', bet })
   }, [])
 
+  const spinComplete = useCallback(() => {
+    dispatch({ type: 'SPIN_COMPLETE' })
+  }, [])
+
   const spin = useCallback(() => {
     if (state.spinning || state.balance < state.bet) return
-
     dispatch({ type: 'SPIN_START' })
-
-    // Slight delay before resolving — gives animation time to run
-    setTimeout(() => {
-      const reels = spinReels()
-      const result = evaluateSpin(reels, state.bet)
-      dispatch({ type: 'SPIN_COMPLETE', reels, result })
-    }, 1800)
-  }, [state.spinning, state.balance, state.bet])
+    setTimeout(spinComplete, SPIN_RESOLVE_MS)
+  }, [state.spinning, state.balance, state.bet, spinComplete])
 
   const canSpin = !state.spinning && state.balance >= state.bet
 

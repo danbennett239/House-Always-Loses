@@ -1,0 +1,73 @@
+.paytable {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 18px;
+  background: #1c1c1c;
+  border: 1px solid #383838;
+  border-radius: 12px;
+  min-width: 160px;
+  align-self: flex-start;
+}
+
+.paytable-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #888;
+  text-align: center;
+}
+
+.paytable-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.paytable-row {
+  border-bottom: 1px solid #282828;
+}
+
+.paytable-row:last-child {
+  border-bottom: none;
+}
+
+.paytable-combo {
+  padding: 9px 0;
+  font-size: 20px;
+  letter-spacing: -2px;
+}
+
+.paytable-multiplier {
+  padding: 9px 0 9px 12px;
+  text-align: right;
+  font-size: 18px;
+  font-weight: 800;
+  color: #f0d060;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Two-of-a-kind row */
+.paytable-row--ldw .paytable-combo--any {
+  font-size: 13px;
+  letter-spacing: 0;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 9px 0;
+}
+
+.paytable-multiplier--ldw {
+  color: #666;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.paytable-rtp {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}

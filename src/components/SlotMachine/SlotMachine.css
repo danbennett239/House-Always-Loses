@@ -1,3 +1,9 @@
+.slot-machine-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
 .slot-machine {
   display: flex;
   flex-direction: column;
@@ -28,7 +34,7 @@
   font-size: 12px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #555;
+  color: #888;
 }
 
 .reels-wrapper {
@@ -50,6 +56,6 @@
 
 .spin-counter {
   font-size: 12px;
-  color: #444;
+  color: #777;
   letter-spacing: 1px;
 }
