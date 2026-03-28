@@ -6,7 +6,6 @@ import './Reels.css'
 const REEL_SYMBOL_HEIGHT  = 70
 const REEL_WIDTH          = 70   // must match .reel-window width in CSS
 const REEL_GAP            = 6    // must match gap in .reels-container in CSS
-const CONTAINER_PADDING   = 10   // must match padding in .reels-container in CSS
 const STRIP_LENGTH        = 40
 const LOOP_SYMBOLS        = 20
 const LOOP_DURATION       = 0.7
@@ -15,8 +14,10 @@ const DECEL_DURATION      = 0.55
 const LANDING_INDEX       = STRIP_LENGTH - 2
 const LANDING_Y           = -(LANDING_INDEX - 1) * REEL_SYMBOL_HEIGHT
 
-// Centre x of reel i, from the padding-box edge of .reels-container
-const reelCentreX = (i) => CONTAINER_PADDING + i * (REEL_WIDTH + REEL_GAP) + REEL_WIDTH / 2
+// Centre x of reel i, relative to the content area of .reels-container.
+// .payline-line is absolutely positioned inside .reels-container whose padding
+// is already consumed by the reel flex children — left:0 aligns with reel 0's left edge.
+const reelCentreX = (i) => i * (REEL_WIDTH + REEL_GAP) + REEL_WIDTH / 2
 
 function buildStrip() {
   return Array.from({ length: STRIP_LENGTH }, () =>
