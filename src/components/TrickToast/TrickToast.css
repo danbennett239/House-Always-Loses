@@ -1,0 +1,119 @@
+/* Card sits inside .toast-area (right-aligned flex), arrow points RIGHT at the machine */
+.tt-card {
+  position: relative;
+  width: 240px;
+  flex-shrink: 0;
+
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    0 0 0 1px var(--glass-border);
+}
+
+[data-theme="light"] .tt-card {
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.14),
+    0 0 0 1px var(--glass-border);
+}
+
+/* Right-pointing arrow — tail on right edge of card, pointing toward machine */
+/* arrowTop is ~35% to visually align with the middle row of the reels */
+.tt-card::before {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top:    10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left:   10px solid var(--border);
+}
+
+.tt-card::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top:    9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left:   9px solid var(--bg-elevated);
+}
+
+/* Icon + label */
+.tt-icon-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tt-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.tt-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Text */
+.tt-headline {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+
+.tt-body {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* Footer */
+.tt-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 2px;
+  flex-wrap: wrap;
+}
+
+.tt-dismiss {
+  padding: 7px 18px;
+  border-radius: 14px;
+  border: none;
+  background: var(--gold);
+  color: #111;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  flex-shrink: 0;
+}
+
+.tt-dismiss:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.tt-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}

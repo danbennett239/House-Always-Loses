@@ -49,7 +49,7 @@ function reducer(state, action) {
         ...state,
         spinning: false,
         reels,
-        lastResult: result,
+        lastResult: { ...result, nearMiss },
         balance: newBalance,
         gameOver: newBalance < MIN_BET,
         sessionData: {

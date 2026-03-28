@@ -9,54 +9,48 @@ const [s0, s1] = SYMBOLS
 
 export default function HowToWin() {
   return (
-    <aside className="htw-panel">
-      <h2 className="htw-title">How to Win</h2>
+    <aside className="htw-panel" aria-label="How to win">
 
-      <section className="htw-section">
+      {/* Col 1: Match 3 payouts */}
+      <div className="htw-col">
         <h3 className="htw-section-title">Match 3 — Full Win</h3>
-        <p className="htw-note">All three reels show the same symbol</p>
         <ul className="htw-payout-list">
           {SYMBOLS.map(({ id, emoji, payout }) => (
             <li key={id} className="htw-payout-row">
-              <span
-                className="htw-symbols"
-                aria-hidden="true"
-              >
-                {emoji}{emoji}{emoji}
-              </span>
+              <span className="htw-symbols" aria-hidden="true">{emoji}{emoji}{emoji}</span>
               <span className="htw-label">{id.charAt(0).toUpperCase() + id.slice(1)}</span>
               <span className="htw-multiplier">{payout}×</span>
             </li>
           ))}
         </ul>
-      </section>
+      </div>
 
-      <section className="htw-section">
-        <h3 className="htw-section-title">Match 2 — Partial Win</h3>
+      {/* Col 2: Match 2 + How to Bet */}
+      <div className="htw-col">
+        <h3 className="htw-section-title">Match 2 — Partial</h3>
         <div className="htw-two-of-a-kind">
-          {/* Adjacent match on left (a=b) or right (b=c) — e.g. 🍒🍒🍋 or 🍋🍒🍒 */}
-          <span className="htw-symbols" aria-hidden="true">
-            {s0.emoji}{s0.emoji}{s1.emoji}
-          </span>
+          <span className="htw-symbols" aria-hidden="true">{s0.emoji}{s0.emoji}{s1.emoji}</span>
           <span className="htw-multiplier">0.5×</span>
         </div>
-        <p className="htw-note">Two adjacent matching symbols (left–left or right–right) pay half your bet (net loss)</p>
-      </section>
+        <p className="htw-note">Pays half your bet (net loss)</p>
 
-      <section className="htw-section">
-        <h3 className="htw-section-title">How to Bet</h3>
+        <h3 className="htw-section-title" style={{ marginTop: 6 }}>How to Bet</h3>
         <ol className="htw-steps">
-          <li>Choose a chip amount below the reels</li>
+          <li>Pick a chip amount</li>
           <li>Press <strong>SPIN</strong></li>
-          <li>Win if the reels line up on the centre row</li>
+          <li>Centre row is the payline</li>
         </ol>
-      </section>
-
-      <div className="htw-rtp-badge">
-        <span className="htw-rtp-label">House Edge</span>
-        <span className="htw-rtp-value">{HOUSE_EDGE_PCT}%</span>
-        <span className="htw-rtp-sub">£{RETURN_PER_POUND} returned per £1 bet on average</span>
       </div>
+
+      {/* Col 3: House Edge */}
+      <div className="htw-col htw-col--narrow">
+        <div className="htw-rtp-badge">
+          <span className="htw-rtp-label">House Edge</span>
+          <span className="htw-rtp-value">{HOUSE_EDGE_PCT}%</span>
+          <span className="htw-rtp-sub">£{RETURN_PER_POUND} back<br />per £1 bet</span>
+        </div>
+      </div>
+
     </aside>
   )
 }
