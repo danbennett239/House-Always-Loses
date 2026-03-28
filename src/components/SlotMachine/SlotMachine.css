@@ -35,19 +35,6 @@
   position: relative;
 }
 
-/* Horizontal payline across the middle row */
-.payline-overlay {
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  right: 12px;
-  height: 100px;
-  transform: translateY(-50%);
-  border-top: 2px solid rgba(212, 175, 55, 0.25);
-  border-bottom: 2px solid rgba(212, 175, 55, 0.25);
-  pointer-events: none;
-}
-
 
 .spin-counter {
   font-size: 12px;

@@ -1,10 +1,25 @@
+import { useState, useCallback, useRef } from 'react'
 import Reels from './Reels.jsx'
 import SpinButton from './SpinButton.jsx'
 import ResultMessage from './ResultMessage.jsx'
 import EndScreen from '../EndScreen/EndScreen.jsx'
 import './SlotMachine.css'
 
-export default function SlotMachine({ reels, spinning, lastResult, balance, bet, setBet, spin, canSpin, gameOver, reset, sessionData }) {
+export default function SlotMachine({ reels, spinning, lastResult, balance, bet, setBet, spin, canSpin, gameOver, reset, sessionData, onReelsSettled }) {
+  const [reelsSettled, setReelsSettled] = useState(true)
+  const preSpinBalance = useRef(balance)
+
+  const handleAllStopped = useCallback(() => {
+    setReelsSettled(true)
+    onReelsSettled?.()
+  }, [onReelsSettled])
+
+  const handleSpin = useCallback(() => {
+    preSpinBalance.current = balance
+    setReelsSettled(false)
+    spin()
+  }, [spin, balance])
+
   return (
     <div className="slot-machine">
       <div className="slot-machine-header">
@@ -13,27 +28,30 @@ export default function SlotMachine({ reels, spinning, lastResult, balance, bet,
       </div>
 
       <div className="reels-wrapper">
-        <Reels reels={reels} spinning={spinning} />
-        {/* Payline highlight overlay */}
-        <div className="payline-overlay" />
+        <Reels
+          reels={reels}
+          spinning={spinning}
+          lastResult={lastResult}
+          onAllStopped={handleAllStopped}
+        />
       </div>
 
-      <ResultMessage lastResult={lastResult} spinning={spinning} />
+      <ResultMessage lastResult={reelsSettled ? lastResult : null} spinning={spinning || !reelsSettled} />
 
       <SpinButton
         bet={bet}
         setBet={setBet}
-        balance={balance}
-        onSpin={spin}
-        spinDisabled={!canSpin}
-        spinning={spinning}
+        balance={reelsSettled ? balance : preSpinBalance.current}
+        onSpin={handleSpin}
+        spinDisabled={!canSpin || !reelsSettled}
+        spinning={spinning || !reelsSettled}
       />
 
       <div className="spin-counter">
         {sessionData.totalSpins} spin{sessionData.totalSpins !== 1 ? 's' : ''}
       </div>
 
-      {gameOver && (
+      {gameOver && reelsSettled && (
         <EndScreen sessionData={sessionData} onReset={reset} />
       )}
     </div>
