@@ -13,9 +13,7 @@ export default function SlotMachine({ reels, spinning, lastResult, balance, bet,
       </div>
 
       <div className="reels-wrapper">
-        <Reels reels={reels} spinning={spinning} />
-        {/* Payline highlight overlay */}
-        <div className="payline-overlay" />
+        <Reels reels={reels} spinning={spinning} lastResult={lastResult} />
       </div>
 
       <ResultMessage lastResult={lastResult} spinning={spinning} />
