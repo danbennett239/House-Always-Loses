@@ -98,7 +98,8 @@
   padding-top: 57px;
 }
 
-/* No dimming — spin is blocked via canSpin instead */
+/* No dimming on desktop — spin is blocked via canSpin instead.
+   On mobile, a backdrop overlay is injected when data-toast-active is present (see mobile rules below). */
 
 .game-layout > :first-child,
 .game-layout > :last-child {
@@ -132,13 +133,11 @@
     grid-row: 2;
   }
 
-  /* HowToWin full width below */
+  /* HowToWin full width below — spacing controlled in HowToWin.css */
   .game-layout > .htw-panel {
     grid-column: 1;
     grid-row: 3;
     margin-top: 0;
-    flex-direction: column;
-    gap: 14px;
   }
 
   /* On mobile, trick toast becomes a centred overlay */
