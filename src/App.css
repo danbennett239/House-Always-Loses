@@ -77,8 +77,8 @@
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: start;
-  gap: 16px;
-  padding: 16px 24px 12px;
+  gap: 12px;
+  padding: 4px 24px 12px;
 }
 
 /* Centre column: machine only */
