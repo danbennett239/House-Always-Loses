@@ -28,6 +28,7 @@ export default function SlotMachine() {
         balance={balance}
         onSpin={spin}
         disabled={!canSpin}
+        spinning={spinning}
       />
 
       <div className="spin-counter">
