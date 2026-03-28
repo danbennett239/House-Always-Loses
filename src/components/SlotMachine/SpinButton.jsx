@@ -1,8 +1,27 @@
+import { useState } from 'react'
 import './SpinButton.css'
 
 const BET_INCREMENTS = [1, 5, 10, 15, 25, 50]
 
 export default function SpinButton({ bet, setBet, balance, onSpin, disabled }) {
+  const [custom, setCustom] = useState('')
+
+  function handleCustomChange(e) {
+    setCustom(e.target.value)
+  }
+
+  function handleCustomBlur() {
+    const val = parseInt(custom, 10)
+    if (!isNaN(val) && val >= 1) setBet(val)
+    setCustom('')
+  }
+
+  function handleCustomKey(e) {
+    if (e.key === 'Enter') e.target.blur()
+  }
+
+  const isCustomActive = !BET_INCREMENTS.includes(bet)
+
   return (
     <div className="spin-controls">
       <div className="bet-increments">
@@ -17,6 +36,19 @@ export default function SpinButton({ bet, setBet, balance, onSpin, disabled }) {
           </button>
         ))}
       </div>
+
+      <input
+        className={`bet-custom${isCustomActive ? ' active' : ''}`}
+        type="number"
+        min={1}
+        max={balance}
+        placeholder="Custom amount"
+        value={custom}
+        onChange={handleCustomChange}
+        onBlur={handleCustomBlur}
+        onKeyDown={handleCustomKey}
+        disabled={disabled}
+      />
 
       <div className="bet-display">Bet: £{bet}</div>
 
