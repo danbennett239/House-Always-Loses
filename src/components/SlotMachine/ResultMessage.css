@@ -1,0 +1,27 @@
+.result-placeholder {
+  height: 36px;
+}
+
+.result-message {
+  height: 36px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.result-win {
+  color: #4caf50;
+}
+
+/* LDW looks like a win — same green, same style. That's the point. */
+.result-ldw {
+  color: #4caf50;
+}
+
+.result-loss {
+  color: #666;
+  font-weight: 400;
+  font-size: 14px;
+  padding-top: 4px;
+}
