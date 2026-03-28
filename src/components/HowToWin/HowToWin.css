@@ -1,10 +1,11 @@
 .htw-panel {
   width: 100%;
-  grid-column: 1 / -1;
+  grid-column: 2;
+  margin-top: -40px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 14px 20px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: row;
   gap: 0;
@@ -12,23 +13,34 @@
   transition: background 0.3s, border-color 0.3s;
 }
 
-/* Dividers between columns */
-.htw-col + .htw-col {
-  border-left: 1px solid var(--border);
-  padding-left: 20px;
-  margin-left: 20px;
-}
-
+/* Columns */
 .htw-col {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   flex: 1;
   min-width: 0;
 }
 
-.htw-col--narrow {
-  flex: 0 0 auto;
+.htw-col--right {
+  border-left: 1px solid var(--border);
+  padding-left: 14px;
+  margin-left: 14px;
+  justify-content: flex-start;
+}
+
+.htw-sub-section {
+  margin-top: auto;
+}
+
+.htw-rtp-badge {
+  margin-top: auto;
+}
+
+.htw-sub-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .htw-section-title {
@@ -37,41 +49,42 @@
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  white-space: nowrap;
 }
 
 .htw-note {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
-/* Payout grid: 3-column layout so all 6 symbols fit side by side */
+/* Payout grid: 2 columns → 3 rows of 2 */
 .htw-payout-list {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
+  grid-template-columns: 1fr;
+  gap: 3px;
+  flex: 1;
+  align-content: start;
 }
 
 .htw-payout-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 8px;
+  gap: 5px;
+  padding: 3px 7px;
   border-radius: 7px;
   background: var(--bg-card);
   border: 1px solid var(--border-card);
 }
 
 .htw-symbols {
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: -1px;
   flex-shrink: 0;
 }
 
 .htw-label {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-label);
   flex: 1;
   min-width: 0;
@@ -81,7 +94,7 @@
 }
 
 .htw-multiplier {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--gold);
   flex-shrink: 0;
@@ -92,7 +105,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 10px;
+  padding: 5px 8px;
   border-radius: 7px;
   background: var(--bg-card);
   border: 1px solid var(--border-card);
@@ -103,11 +116,11 @@
   padding-left: 14px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 
 .htw-steps li {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-label);
   line-height: 1.4;
 }
@@ -122,27 +135,52 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  flex: 1;
+  gap: 1px;
+  padding: 6px 0 0;
+  border-top: 1px solid var(--border);
 }
 
 .htw-rtp-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .htw-rtp-value {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--red);
   line-height: 1;
 }
 
 .htw-rtp-sub {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
   text-align: center;
-  line-height: 1.4;
+  line-height: 1.3;
+}
+
+@media (max-width: 700px) {
+  .htw-panel {
+    flex-direction: column;
+    margin-top: 0;
+  }
+
+  .htw-col--right {
+    border-left: none;
+    border-top: 1px solid var(--border);
+    padding-left: 0;
+    margin-left: 0;
+    padding-top: 14px;
+  }
+
+  .htw-sub-section,
+  .htw-rtp-badge {
+    margin-top: 0;
+  }
+
+  .htw-payout-list {
+    grid-template-columns: 1fr 1fr;
+  }
 }
