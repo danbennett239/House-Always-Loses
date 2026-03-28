@@ -6,39 +6,46 @@
   margin-top: 20px;
 }
 
-.bet-row {
+.bet-increments {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.bet-adj {
-  width: 36px;
-  height: 36px;
+.bet-chip {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   border: 2px solid #555;
   background: #222;
-  color: #fff;
-  font-size: 18px;
+  color: #ccc;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.bet-adj:hover:not(:disabled) {
+.bet-chip:hover:not(:disabled) {
   background: #333;
   border-color: #888;
+  color: #fff;
 }
 
-.bet-adj:disabled {
-  opacity: 0.35;
+.bet-chip.active {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+}
+
+.bet-chip:disabled {
+  opacity: 0.25;
   cursor: not-allowed;
 }
 
 .bet-display {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  min-width: 80px;
-  text-align: center;
   color: #e0e0e0;
 }
 
