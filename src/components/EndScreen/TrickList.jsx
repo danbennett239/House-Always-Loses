@@ -26,8 +26,8 @@ const TRICKS = [
     getDetected: (sd) => sd.nearMisses > 0,
     description: (sd) =>
       sd.nearMisses > 0
-        ? `${sd.nearMisses} time${sd.nearMisses !== 1 ? 's' : ''} the reels stopped one symbol away from a win. This is engineered — the weights are tuned to maximise near-misses.`
-        : 'Two matching symbols, third falls one position away. Reel weights are tuned to maximise these moments.',
+        ? `${sd.nearMisses} time${sd.nearMisses !== 1 ? 's' : ''} the first and last reel matched but the middle didn't — a full loss that looks like a near-win. No payout. Pure psychology.`
+        : 'First and last reel match, middle doesn\'t — a full loss engineered to feel like bad luck rather than the expected outcome.',
   },
   {
     id: 'ldw',
@@ -36,8 +36,8 @@ const TRICKS = [
     getDetected: (sd) => sd.ldwCount > 0,
     description: (sd) =>
       sd.ldwCount > 0
-        ? `${sd.ldwCount} "win"${sd.ldwCount !== 1 ? 's' : ''} paid back less than your bet. The machine celebrated. You were down money.`
-        : 'A win sound plays, but the payout is less than the bet. The machine celebrates your loss.',
+        ? `${sd.ldwCount} time${sd.ldwCount !== 1 ? 's' : ''} two adjacent reels matched and the machine celebrated — but the payout was less than your bet. You were losing while winning.`
+        : 'Two adjacent reels match, triggering win sounds and animation. The payout is less than the bet. The machine celebrates your loss.',
   },
   {
     id: 'variable-reward',
