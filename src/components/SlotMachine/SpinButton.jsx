@@ -2,7 +2,7 @@ import './SpinButton.css'
 
 const BET_INCREMENTS = [1, 5, 10, 15, 25, 50]
 
-export default function SpinButton({ bet, setBet, balance, onSpin, disabled, spinning }) {
+export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled, spinning }) {
   return (
     <div className="spin-controls">
       <div className="bet-increments">
@@ -20,7 +20,7 @@ export default function SpinButton({ bet, setBet, balance, onSpin, disabled, spi
 
       <div className="bet-display">Bet: £{bet}</div>
 
-      <button className="spin-btn" onClick={onSpin} disabled={disabled}>
+      <button className="spin-btn" onClick={onSpin} disabled={spinDisabled}>
         {spinning ? 'Spinning…' : 'SPIN'}
       </button>
 

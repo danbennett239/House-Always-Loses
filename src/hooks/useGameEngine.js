@@ -3,6 +3,7 @@ import { spinReels, evaluateSpin, detectNearMiss } from '../utils/probability.js
 
 const STARTING_BALANCE = 100
 const DEFAULT_BET = 1
+const MIN_BET = 1
 
 const initialState = {
   balance: STARTING_BALANCE,
@@ -10,6 +11,7 @@ const initialState = {
   reels: null,          // null = not yet spun
   spinning: false,
   lastResult: null,     // { win, gross, net, isLDW }
+  gameOver: false,
   sessionData: {
     totalSpins: 0,
     totalWagered: 0,
@@ -37,7 +39,7 @@ function reducer(state, action) {
       const { gross, net, win, isLDW } = result
       const nearMiss = !win && detectNearMiss(reels)
 
-      const newBalance = state.balance + net
+      const newBalance = Math.round((state.balance + net) * 100) / 100
       const sd = state.sessionData
       const spinNum = sd.totalSpins + 1
 
@@ -47,6 +49,7 @@ function reducer(state, action) {
         reels,
         lastResult: result,
         balance: newBalance,
+        gameOver: newBalance < MIN_BET,
         sessionData: {
           totalSpins: spinNum,
           totalWagered: sd.totalWagered + state.bet,
@@ -62,6 +65,9 @@ function reducer(state, action) {
         },
       }
     }
+
+    case 'RESET':
+      return initialState
 
     default:
       return state
@@ -88,7 +94,11 @@ export function useGameEngine() {
     }, 1800)
   }, [state.spinning, state.balance, state.bet])
 
-  const canSpin = !state.spinning && state.balance >= state.bet
+  const reset = useCallback(() => {
+    dispatch({ type: 'RESET' })
+  }, [])
 
-  return { ...state, setBet, spin, canSpin }
+  const canSpin = !state.spinning && !state.gameOver && state.balance >= state.bet
+
+  return { ...state, setBet, spin, canSpin, reset }
 }
