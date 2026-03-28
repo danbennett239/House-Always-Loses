@@ -1,0 +1,141 @@
+.htw-panel {
+  width: 220px;
+  flex-shrink: 0;
+  background: linear-gradient(160deg, #141414 0%, #0f0f0f 100%);
+  border: 1px solid #2a2a2a;
+  border-radius: 16px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-self: center;
+}
+
+.htw-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #d4af37;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  padding-bottom: 12px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.htw-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.htw-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.htw-note {
+  font-size: 11px;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* Payout table */
+.htw-payout-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.htw-payout-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 1px solid #222;
+}
+
+.htw-symbols {
+  font-size: 13px;
+  letter-spacing: -1px;
+  flex-shrink: 0;
+}
+
+.htw-label {
+  font-size: 12px;
+  color: #aaa;
+  flex: 1;
+}
+
+.htw-multiplier {
+  font-size: 13px;
+  font-weight: 700;
+  color: #d4af37;
+}
+
+/* Two of a kind row */
+.htw-two-of-a-kind {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 1px solid #222;
+}
+
+/* Steps list */
+.htw-steps {
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.htw-steps li {
+  font-size: 12px;
+  color: #aaa;
+  line-height: 1.4;
+}
+
+.htw-steps li strong {
+  color: #d4af37;
+}
+
+/* RTP badge */
+.htw-rtp-badge {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.htw-rtp-label {
+  font-size: 10px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.htw-rtp-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #e05252;
+}
+
+.htw-rtp-sub {
+  font-size: 10px;
+  color: #555;
+  text-align: center;
+  line-height: 1.4;
+}
