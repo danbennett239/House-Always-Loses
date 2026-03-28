@@ -1,21 +1,24 @@
 import './SpinButton.css'
 
+const BET_INCREMENTS = [1, 5, 10, 15, 25, 50]
+
 export default function SpinButton({ bet, setBet, balance, onSpin, disabled }) {
   return (
     <div className="spin-controls">
-      <div className="bet-row">
-        <button
-          className="bet-adj"
-          onClick={() => setBet(bet - 1)}
-          disabled={bet <= 1 || disabled}
-        >−</button>
-        <span className="bet-display">Bet: £{bet}</span>
-        <button
-          className="bet-adj"
-          onClick={() => setBet(bet + 1)}
-          disabled={bet >= balance || disabled}
-        >+</button>
+      <div className="bet-increments">
+        {BET_INCREMENTS.map((amount) => (
+          <button
+            key={amount}
+            className={`bet-chip${bet === amount ? ' active' : ''}`}
+            onClick={() => setBet(amount)}
+            disabled={amount > balance || disabled}
+          >
+            £{amount}
+          </button>
+        ))}
       </div>
+
+      <div className="bet-display">Bet: £{bet}</div>
 
       <button className="spin-btn" onClick={onSpin} disabled={disabled}>
         {disabled ? 'Spinning…' : 'SPIN'}
