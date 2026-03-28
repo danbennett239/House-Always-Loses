@@ -3,11 +3,15 @@ const SPINS_PER_HOUR  = 600          // ~600 spins/hr is typical for slots
 const HOURS_PER_SESSION = 4
 const SESSIONS_PER_YEAR = 50
 
+// Minimum spins before trusting experienced RTP for projections.
+// Below this threshold the sample is too small and we fall back to theoretical.
+const MIN_SPINS_FOR_EXPERIENCED_RTP = 10
+
 // Returns the RTP the player has actually experienced this session.
-// Falls back to theoretical if not enough data.
+// Falls back to theoretical until MIN_SPINS_FOR_EXPERIENCED_RTP spins have been made.
 function experiencedRTP(sessionData) {
-  const { totalWagered, totalWon } = sessionData
-  if (totalWagered === 0) return THEORETICAL_RTP
+  const { totalSpins, totalWagered, totalWon } = sessionData
+  if (totalSpins < MIN_SPINS_FOR_EXPERIENCED_RTP) return THEORETICAL_RTP
   return totalWon / totalWagered
 }
 

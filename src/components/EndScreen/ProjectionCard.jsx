@@ -13,10 +13,10 @@ function ProjectionRow({ label, value }) {
   )
 }
 
-export default function ProjectionCard({ sessionData, balance }) {
+export default function ProjectionCard({ sessionData }) {
   const proj = projectLifetime(sessionData)
 
-  const netResult = balance - 100   // positive = net win, negative = net loss
+  const netResult = sessionData.netBalance   // positive = net win, negative = net loss
 
   return (
     <div className="projection-card">
@@ -31,7 +31,7 @@ export default function ProjectionCard({ sessionData, balance }) {
         </div>
         <div className="proj-summary-item">
           <span className={`proj-summary-value ${netResult < 0 ? 'proj-value--loss' : 'proj-value--win'}`}>
-            {netResult >= 0 ? '+' : '-'}£{Math.abs(netResult).toFixed(2)}
+            {netResult >= 0 ? '+' : ''}£{netResult.toFixed(2)}
           </span>
           <span className="proj-summary-label">net result</span>
         </div>

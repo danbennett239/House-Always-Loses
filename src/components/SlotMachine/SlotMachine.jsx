@@ -37,7 +37,7 @@ export default function SlotMachine() {
       </div>
 
       {gameOver && (
-        <EndScreen sessionData={sessionData} balance={balance} onReset={reset} />
+        <EndScreen sessionData={sessionData} onReset={reset} />
       )}
     </div>
   )
