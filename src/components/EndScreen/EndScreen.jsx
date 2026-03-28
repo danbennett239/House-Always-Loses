@@ -8,7 +8,7 @@ const TITLE_ID = 'end-screen-title'
 // Add entries here to introduce new cards. Index is derived from position.
 function buildCards(sessionData) {
   return [
-    { title: 'Your Session', content: <ProjectionCard sessionData={sessionData} /> },
+    { id: 'projection', title: 'Your Session', content: <ProjectionCard sessionData={sessionData} /> },
   ]
 }
 
@@ -32,8 +32,8 @@ export default function EndScreen({ sessionData, onReset }) {
     >
       <h2 id={TITLE_ID} className="end-title">Game Over</h2>
 
-      {cards.map(({ title, content }, i) => (
-        <EndCard key={title} index={i} title={title}>
+      {cards.map(({ id, title, content }, i) => (
+        <EndCard key={id} index={i} title={title}>
           {content}
         </EndCard>
       ))}

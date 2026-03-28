@@ -42,28 +42,31 @@ export default function ProjectionCard({ sessionData }) {
         </div>
       </div>
 
-      {proj && (
-        <>
-          <div className="proj-rtp">
-            {proj.usingExperiencedRTP
-              ? <>You got back <strong>{(proj.experienced.rtp * 100).toFixed(1)}p</strong> for every £1 you bet</>
-              : <>Too few spins for a personal rate — projections use the <strong>claimed {(proj.theoretical.rtp * 100).toFixed(0)}%</strong> RTP</>
-            }
-          </div>
+      {proj && (() => {
+        const source = proj.usingExperiencedRTP ? proj.experienced : proj.theoretical
+        return (
+          <>
+            <div className="proj-rtp">
+              {proj.usingExperiencedRTP
+                ? <>You got back <strong>{(source.rtp * 100).toFixed(1)}p</strong> for every £1 you bet</>
+                : <>Too few spins for a personal rate — projections use the <strong>claimed {(source.rtp * 100).toFixed(0)}%</strong> RTP</>
+              }
+            </div>
 
-          <div className="proj-rows">
-            <ProjectionRow label="Per hour"            value={proj.experienced.lossPerHour} />
-            <ProjectionRow label={`Per session (${HOURS_PER_SESSION} hr)`} value={proj.experienced.lossPerSession} />
-            <ProjectionRow label={`Per year (${SESSIONS_PER_YEAR} sessions)`} value={proj.experienced.lossPerYear} />
-            <ProjectionRow label="Over 10 years"       value={proj.experienced.lossPerDecade} />
-          </div>
+            <div className="proj-rows">
+              <ProjectionRow label="Per hour"                               value={source.netPerHour} />
+              <ProjectionRow label={`Per session (${HOURS_PER_SESSION} hr)`}   value={source.netPerSession} />
+              <ProjectionRow label={`Per year (${SESSIONS_PER_YEAR} sessions)`} value={source.netPerYear} />
+              <ProjectionRow label="Over 10 years"                          value={source.netPerDecade} />
+            </div>
 
-          <p className="proj-note">
-            {proj.usingExperiencedRTP ? 'Based on your actual rate' : 'Based on claimed RTP'}
-            {` · ~${SPINS_PER_HOUR} spins/hr · ${HOURS_PER_SESSION} hr sessions · ${SESSIONS_PER_YEAR}×/yr`}
-          </p>
-        </>
-      )}
+            <p className="proj-note">
+              {proj.usingExperiencedRTP ? 'Based on your actual rate' : 'Based on claimed RTP'}
+              {` · ~${SPINS_PER_HOUR} spins/hr · ${HOURS_PER_SESSION} hr sessions · ${SESSIONS_PER_YEAR}×/yr`}
+            </p>
+          </>
+        )
+      })()}
     </div>
   )
 }

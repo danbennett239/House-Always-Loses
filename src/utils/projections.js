@@ -16,14 +16,15 @@ function experiencedRTP(sessionData) {
   return totalWon / totalWagered
 }
 
-// Project losses forward using a given house edge and average bet.
+// Project expected net result forward using a given house edge and average bet.
+// Positive values = expected net loss for the player; negative = expected net gain.
 function project(avgBetPerSpin, houseEdge) {
-  const lossPerSpin    = avgBetPerSpin * houseEdge
-  const lossPerHour    = lossPerSpin   * SPINS_PER_HOUR
-  const lossPerSession = lossPerHour   * HOURS_PER_SESSION
-  const lossPerYear    = lossPerSession * SESSIONS_PER_YEAR
-  const lossPerDecade  = lossPerYear   * 10
-  return { lossPerSpin, lossPerHour, lossPerSession, lossPerYear, lossPerDecade }
+  const netPerSpin    = avgBetPerSpin * houseEdge
+  const netPerHour    = netPerSpin    * SPINS_PER_HOUR
+  const netPerSession = netPerHour    * HOURS_PER_SESSION
+  const netPerYear    = netPerSession * SESSIONS_PER_YEAR
+  const netPerDecade  = netPerYear    * 10
+  return { netPerSpin, netPerHour, netPerSession, netPerYear, netPerDecade }
 }
 
 // Main export. Returns projection rows using both theoretical and experienced rates.
