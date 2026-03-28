@@ -46,6 +46,27 @@
   position: relative;
 }
 
+/* ── Win state ── */
+@keyframes win-border-pulse {
+  0%   { box-shadow: 0 0 0px  rgba(212, 175, 55, 0);   border-color: #2a2a2a; }
+  30%  { box-shadow: 0 0 40px rgba(212, 175, 55, 0.9);  border-color: #ffd700; }
+  60%  { box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);  border-color: #d4af37; }
+  100% { box-shadow: 0 0 0px  rgba(212, 175, 55, 0);   border-color: #2a2a2a; }
+}
+
+@keyframes win-title-flash {
+  0%, 100% { text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+  40%       { text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6); }
+}
+
+.slot-machine[data-win] {
+  animation: win-border-pulse 1.2s ease-out forwards;
+}
+
+.slot-machine[data-win] .slot-title {
+  animation: win-title-flash 1.2s ease-out forwards;
+}
+
 .spin-counter {
   font-size: 11px;
   color: #444;
