@@ -11,7 +11,7 @@ export default function SlotMachine({ reels, spinning, lastResult, balance, bet,
   const [autoRoll, setAutoRoll] = useState(false)
   const preSpinBalance = useRef(balance)
   const reelsRef = useRef(null)
-  // Only auto-roll after the user has manually spun at least once with auto-roll on
+  // Armed only after the user manually presses SPIN while auto-roll is enabled
   const autoRollArmed = useRef(false)
 
   const handleAllStopped = useCallback(() => {
@@ -19,12 +19,18 @@ export default function SlotMachine({ reels, spinning, lastResult, balance, bet,
     onReelsSettled?.()
   }, [onReelsSettled])
 
+  // Manual spin — arms auto-roll only if the checkbox is already on
   const handleSpin = useCallback(() => {
     preSpinBalance.current = balance
     setReelsSettled(false)
-    autoRollArmed.current = true
+    if (autoRoll) autoRollArmed.current = true
     spin()
-  }, [spin, balance])
+  }, [spin, balance, autoRoll])
+
+  // Disarm when auto-roll is toggled off, or when the game ends
+  useEffect(() => {
+    if (!autoRoll || gameOver) autoRollArmed.current = false
+  }, [autoRoll, gameOver])
 
   // Auto-roll: wait 1.5s after reels settle then fire next spin
   useEffect(() => {

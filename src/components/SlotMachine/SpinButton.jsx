@@ -29,7 +29,8 @@ export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled,
       return
     }
     if (value > balance) {
-      const capped = Math.round(balance * 100) / 100
+      // Mirror reducer: clamp to max(MIN_BET, balance) so draft always matches what the engine will use
+      const capped = Math.round(Math.max(MIN_BET, balance) * 100) / 100
       setDraft(String(capped))
       setBet(capped)
       return

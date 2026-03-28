@@ -20,9 +20,9 @@
   --text-label:       #aaa;
   --text-dim:         #444;
   --gold:             #ffc200;
-  --gold-glow:        rgba(212, 175, 55, 0.4);
-  --gold-bg:          rgba(212, 175, 55, 0.15);
-  --gold-bg-subtle:   rgba(212, 175, 55, 0.05);
+  --gold-glow:        rgba(255, 194, 0, 0.4);
+  --gold-bg:          rgba(255, 194, 0, 0.15);
+  --gold-bg-subtle:   rgba(255, 194, 0, 0.05);
   --red:              #e05252;
   --green:            #4caf50;
   --glass-bg:         rgba(255, 255, 255, 0.03);
