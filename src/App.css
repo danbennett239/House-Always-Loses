@@ -81,12 +81,24 @@
   padding: 20px 24px 12px;
 }
 
-/* Centre column: machine only */
+/* Centre column: machine only (row 1). HowToWin sits directly below in row 2. */
 .machine-column {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.game-layout > .pbp-panel {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+}
+
+.game-layout > .htw-panel {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 /* Left column: holds the trick callout, right-aligned so arrow touches machine.
@@ -135,11 +147,10 @@
     grid-row: 2;
   }
 
-  /* HowToWin full width below — spacing controlled in HowToWin.css */
+  /* HowToWin below PlayByPlay on mobile */
   .game-layout > .htw-panel {
     grid-column: 1;
     grid-row: 3;
-    margin-top: 0;
   }
 
   /* On mobile, trick toast becomes a centred overlay */

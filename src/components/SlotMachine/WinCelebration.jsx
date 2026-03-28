@@ -61,7 +61,7 @@ export default function WinCelebration({ active, originRef }) {
     const originX = rect ? rect.left + rect.width  / 2 : window.innerWidth  / 2
     const originY = rect ? rect.top  + rect.height / 2 : window.innerHeight / 2
     setConfigs(buildParticleConfigs(originX, originY))
-  }, [active]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [active, originRef])
 
   if (!active || configs.length === 0) return null
 
