@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useGameEngine } from './hooks/useGameEngine.js'
 import SlotMachine from './components/SlotMachine/SlotMachine.jsx'
 import HowToWin from './components/HowToWin/HowToWin.jsx'
@@ -12,14 +12,22 @@ export default function App() {
   const [theme, setTheme] = useState(() =>
     window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
   )
+  // Only show log entries that were present when the reels last settled
+  const [settledLogLength, setSettledLogLength] = useState(0)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
 
+  const handleReelsSettled = useCallback(() => {
+    setSettledLogLength(engine.sessionData.log.length)
+  }, [engine.sessionData.log.length])
+
   function toggleTheme() {
     setTheme(t => t === 'dark' ? 'light' : 'dark')
   }
+
+  const visibleLog = engine.sessionData.log.slice(0, settledLogLength)
 
   return (
     <div className="app-shell">
@@ -50,8 +58,8 @@ export default function App() {
       {page === 'game' ? (
         <div className="game-layout">
           <HowToWin />
-          <SlotMachine {...engine} />
-          <PlayByPlay log={engine.sessionData.log} />
+          <SlotMachine {...engine} onReelsSettled={handleReelsSettled} />
+          <PlayByPlay log={visibleLog} />
         </div>
       ) : (
         <AboutUs />

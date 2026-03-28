@@ -6,8 +6,8 @@ import './Reels.css'
 const REEL_SYMBOL_HEIGHT = 100
 const STRIP_LENGTH       = 40
 const LOOP_SYMBOLS       = 20
-const LOOP_DURATION      = 0.7   // seconds per full loop cycle
-const STOP_DELAY_STEP    = 0.5   // seconds between each reel stopping
+const LOOP_DURATION      = 0.7
+const STOP_DELAY_STEP    = 0.5
 const DECEL_DURATION     = 0.55
 const LANDING_INDEX      = STRIP_LENGTH - 2
 const LANDING_Y          = -(LANDING_INDEX - 1) * REEL_SYMBOL_HEIGHT
@@ -41,7 +41,6 @@ function Reel({ targetSymbol, spinning, stopDelay, onStopped, highlighted, color
   const loopCtrl     = useRef(null)
   const stopTimeout  = useRef(null)
 
-  // Bake target into DOM as soon as it's known — long before y reaches LANDING_Y
   useEffect(() => {
     if (!targetSymbol) return
     setStrip(prev => {
@@ -51,15 +50,10 @@ function Reel({ targetSymbol, spinning, stopDelay, onStopped, highlighted, color
     })
   }, [targetSymbol])
 
-  // Start loop when spinning begins. No cleanup here — each reel stops its own
-  // loop inside the staggered timeout below, so loops keep running independently.
   useEffect(() => {
     if (!spinning) return
-
-    // Cancel any in-flight stop from previous spin
     clearTimeout(stopTimeout.current)
     if (loopCtrl.current) loopCtrl.current.stop()
-
     y.set(0)
     loopCtrl.current = animate(y, -(LOOP_SYMBOLS * REEL_SYMBOL_HEIGHT), {
       duration: LOOP_DURATION,
@@ -69,8 +63,6 @@ function Reel({ targetSymbol, spinning, stopDelay, onStopped, highlighted, color
     })
   }, [spinning, y])
 
-  // When the engine resolves, schedule this reel's stop after its own delay.
-  // The loop keeps running until the timeout fires.
   useEffect(() => {
     const justLanded = wasSpinning.current && !spinning
     wasSpinning.current = spinning
@@ -109,7 +101,7 @@ function Reel({ targetSymbol, spinning, stopDelay, onStopped, highlighted, color
   )
 }
 
-export default function Reels({ reels, spinning, lastResult }) {
+export default function Reels({ reels, spinning, lastResult, onAllStopped }) {
   const [allStopped, setAllStopped] = useState(false)
   const stoppedCount = useRef(0)
 
@@ -122,12 +114,14 @@ export default function Reels({ reels, spinning, lastResult }) {
 
   const handleStopped = useCallback(() => {
     stoppedCount.current += 1
-    if (stoppedCount.current === 3) setAllStopped(true)
-  }, [])
+    if (stoppedCount.current === 3) {
+      setAllStopped(true)
+      onAllStopped?.()
+    }
+  }, [onAllStopped])
 
   const { indices, color } = getPaylineInfo(reels, allStopped ? lastResult : null)
 
-  // Centre x of each reel: padding(12) + reelIndex * (width(100) + gap(8)) + halfWidth(50)
   const reelCentreX = (i) => 12 + i * 108 + 50
   const showLine    = indices.length >= 2 && allStopped
   const lineLeft    = showLine ? reelCentreX(Math.min(...indices)) : 0
