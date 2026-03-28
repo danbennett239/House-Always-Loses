@@ -43,6 +43,12 @@ export default function App() {
     clearEvent()
   }
 
+  const handleReset = useCallback(() => {
+    dismissToast()
+    pendingTrick.current = null
+    engine.reset()
+  }, [engine.reset])
+
   function toggleTheme() {
     setTheme(t => t === 'dark' ? 'light' : 'dark')
   }
@@ -84,7 +90,7 @@ export default function App() {
           </div>
           {/* Centre column: machine only */}
           <div className="machine-column">
-            <SlotMachine {...engine} onReelsSettled={handleReelsSettled} />
+            <SlotMachine {...engine} reset={handleReset} onReelsSettled={handleReelsSettled} />
           </div>
           <PlayByPlay log={visibleLog} />
           {/* Full-width row below the three columns */}
