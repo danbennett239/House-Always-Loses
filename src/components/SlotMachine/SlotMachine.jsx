@@ -9,7 +9,7 @@ export default function SlotMachine() {
   const {
     pendingReels, spinning, lastResult,
     balance, bet, setBet, spin, canSpin,
-    sessionData,
+    gameOver, reset, sessionData,
   } = useGameEngine()
 
   return (
@@ -33,13 +33,21 @@ export default function SlotMachine() {
 
         <ResultMessage lastResult={lastResult} spinning={spinning} />
 
-        <SpinButton
-          bet={bet}
-          setBet={setBet}
-          balance={balance}
-          onSpin={spin}
-          disabled={!canSpin}
-        />
+        {gameOver ? (
+          <div className="game-over">
+            <p>Out of funds! Final balance: £{balance.toFixed(2)}</p>
+            <button className="spin-btn" onClick={reset}>Play Again</button>
+          </div>
+        ) : (
+          <SpinButton
+            bet={bet}
+            setBet={setBet}
+            balance={balance}
+            onSpin={spin}
+            spinDisabled={!canSpin}
+            spinning={spinning}
+          />
+        )}
 
         <div className="spin-counter">
           {sessionData.totalSpins} spin{sessionData.totalSpins !== 1 ? 's' : ''}

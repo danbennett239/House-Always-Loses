@@ -81,6 +81,9 @@ function reducer(state, action) {
       }
     }
 
+    case 'RESET':
+      return { ...initialState }
+
     default:
       return state
   }
@@ -108,7 +111,13 @@ export function useGameEngine() {
     }, SPIN_RESOLVE_MS)
   }, [state.spinning, state.balance, state.bet])
 
-  const canSpin = !state.spinning && state.balance >= state.bet
+  const reset = useCallback(() => {
+    clearTimeout(timeoutRef.current)
+    dispatch({ type: 'RESET' })
+  }, [])
 
-  return { ...state, setBet, spin, canSpin }
+  const canSpin = !state.spinning && state.balance >= state.bet
+  const gameOver = !state.spinning && state.balance < 1
+
+  return { ...state, setBet, spin, canSpin, gameOver, reset }
 }

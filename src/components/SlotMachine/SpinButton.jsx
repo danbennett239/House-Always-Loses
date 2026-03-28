@@ -3,7 +3,7 @@ import './SpinButton.css'
 
 const BET_INCREMENTS = [1, 5, 10, 15, 25, 50]
 
-export default function SpinButton({ bet, setBet, balance, onSpin, disabled }) {
+export default function SpinButton({ bet, setBet, balance, onSpin, spinDisabled, spinning }) {
   const [custom, setCustom] = useState('')
 
   function handleCustomChange(e) {
@@ -30,7 +30,7 @@ export default function SpinButton({ bet, setBet, balance, onSpin, disabled }) {
             key={amount}
             className={`bet-chip${bet === amount ? ' active' : ''}`}
             onClick={() => setBet(amount)}
-            disabled={amount > balance || disabled}
+            disabled={amount > balance || spinDisabled}
           >
             £{amount}
           </button>
@@ -49,13 +49,13 @@ export default function SpinButton({ bet, setBet, balance, onSpin, disabled }) {
         onChange={handleCustomChange}
         onBlur={handleCustomBlur}
         onKeyDown={handleCustomKey}
-        disabled={disabled}
+        disabled={spinDisabled}
       />
 
       <div className="bet-display">Bet: £{bet}</div>
 
-      <button className="spin-btn" onClick={onSpin} disabled={disabled}>
-        {disabled ? 'Spinning…' : 'SPIN'}
+      <button className="spin-btn" onClick={onSpin} disabled={spinDisabled}>
+        {spinning ? 'Spinning…' : 'SPIN'}
       </button>
 
       <div className="balance-display">Balance: £{balance.toFixed(2)}</div>
