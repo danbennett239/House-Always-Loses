@@ -1,20 +1,8 @@
-import { SYMBOLS } from '../../utils/probability.js'
+import { SYMBOLS, RTP, HOUSE_EDGE } from '../../utils/probability.js'
 import './HowToWin.css'
 
-// Compute actual RTP from the engine's symbol weights and payouts.
-// Three of a kind: P(s,s,s) * payout_s
-// Two of a kind:   P(exactly two match) * 0.5
-const totalWeight = SYMBOLS.reduce((sum, s) => sum + s.weight, 0)
-const probs = SYMBOLS.map(s => s.weight / totalWeight)
-
-const p3 = probs.reduce((sum, p) => sum + p ** 3, 0)
-const p2 = 3 * probs.reduce((sum, p) => sum + p ** 2, 0) - 3 * p3
-
-const rtp3 = SYMBOLS.reduce((sum, s, i) => sum + probs[i] ** 3 * s.payout, 0)
-const rtp  = rtp3 + p2 * 0.5
-
-const HOUSE_EDGE_PCT = Math.round((1 - rtp) * 100)
-const RETURN_PER_POUND = rtp.toFixed(2)
+const HOUSE_EDGE_PCT   = Math.round(HOUSE_EDGE * 100)
+const RETURN_PER_POUND = RTP.toFixed(2)
 
 // First symbol in SYMBOLS used as the "odd one out" in the match-2 example
 const [s0, s1] = SYMBOLS

@@ -46,6 +46,15 @@ export function evaluateSpin(reels, bet) {
   return { win: false, gross: 0, net: -bet, isLDW: false }
 }
 
+// Theoretical RTP derived from SYMBOLS weights and evaluateSpin payout rules.
+// Re-export these so UI components stay in sync with the actual engine.
+const _probs = SYMBOLS.map(s => s.weight / totalWeight)
+const _p3 = _probs.reduce((sum, p) => sum + p ** 3, 0)
+const _p2 = 3 * _probs.reduce((sum, p) => sum + p ** 2, 0) - 3 * _p3
+const _rtp3 = SYMBOLS.reduce((sum, s, i) => sum + _probs[i] ** 3 * s.payout, 0)
+export const RTP        = _rtp3 + _p2 * 0.5          // e.g. 0.41
+export const HOUSE_EDGE = 1 - RTP                     // e.g. 0.59
+
 // Near-miss: two matching symbols + a third that's one position off on the same symbol
 export function detectNearMiss(reels) {
   const [a, b, c] = reels
