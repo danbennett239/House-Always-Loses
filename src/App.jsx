@@ -57,7 +57,7 @@ export default function App() {
         totalSpins:  sd.totalSpins,
         ldwCount:    sd.ldwCount,
         nearMisses:  sd.nearMisses,
-        lossToDate:  -sd.netBalance,
+        lossToDate:  proj?.lossToDate ?? 0,
       }
     }))
   }, [engine.sessionData, engine.lastResult, engine.balance])
