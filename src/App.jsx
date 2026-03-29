@@ -36,7 +36,15 @@ export default function App() {
       setActiveToast(pendingTrick.current)
       pendingTrick.current = null
     }
-  }, [engine.sessionData.log.length])
+    // Emit event for Chrome extension (or any external listener)
+    window.dispatchEvent(new CustomEvent('hal:spin-settled', {
+      detail: {
+        sessionData: engine.sessionData,
+        lastResult:  engine.lastResult,
+        balance:     engine.balance,
+      }
+    }))
+  }, [engine.sessionData, engine.lastResult, engine.balance])
 
   function dismissToast() {
     setActiveToast(null)
