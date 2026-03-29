@@ -4,6 +4,7 @@ import SpinButton from './SpinButton.jsx'
 import ResultMessage from './ResultMessage.jsx'
 import WinCelebration from './WinCelebration.jsx'
 import EndScreen from '../EndScreen/EndScreen.jsx'
+import { useSlotAudio } from '../../hooks/useSlotAudio.js'
 import './SlotMachine.css'
 
 export default function SlotMachine({ reels, spinning, lastResult, balance, bet, setBet, spin, canSpin, gameOver, reset, sessionData, onReelsSettled }) {
@@ -11,21 +12,24 @@ export default function SlotMachine({ reels, spinning, lastResult, balance, bet,
   const [autoRoll, setAutoRoll] = useState(false)
   const preSpinBalance = useRef(balance)
   const reelsRef = useRef(null)
-  // Armed only after the user manually presses SPIN while auto-roll is enabled
   const autoRollArmed = useRef(false)
+  const { playSpinStart, startReelTick, stopReelTick, playReelStop, playWin, playLDW, playLoss } = useSlotAudio()
 
   const handleAllStopped = useCallback(() => {
+    stopReelTick()
     setReelsSettled(true)
     onReelsSettled?.()
-  }, [onReelsSettled])
+  }, [onReelsSettled, stopReelTick])
 
   // Manual spin — arms auto-roll only if the checkbox is already on
   const handleSpin = useCallback(() => {
     preSpinBalance.current = balance
     setReelsSettled(false)
     if (autoRoll) autoRollArmed.current = true
+    playSpinStart()
+    startReelTick()
     spin()
-  }, [spin, balance, autoRoll])
+  }, [spin, balance, autoRoll, playSpinStart, startReelTick])
 
   // Disarm when auto-roll is toggled off, or when the game ends
   useEffect(() => {
@@ -39,6 +43,17 @@ export default function SlotMachine({ reels, spinning, lastResult, balance, bet,
     const t = setTimeout(handleSpin, 1500)
     return () => clearTimeout(t)
   }, [autoRoll, reelsSettled, canSpin, gameOver, handleSpin])
+
+  // Play result sound once reels settle
+  const prevSettled = useRef(true)
+  useEffect(() => {
+    if (!prevSettled.current && reelsSettled && lastResult) {
+      if (lastResult.isLDW)       playLDW()
+      else if (lastResult.win)    playWin()
+      else                        playLoss()
+    }
+    prevSettled.current = reelsSettled
+  }, [reelsSettled, lastResult, playWin, playLDW, playLoss])
 
   const isWin = reelsSettled && lastResult?.win && !lastResult?.isLDW
 
@@ -55,6 +70,7 @@ export default function SlotMachine({ reels, spinning, lastResult, balance, bet,
           spinning={spinning}
           lastResult={lastResult}
           onAllStopped={handleAllStopped}
+          onReelStopped={playReelStop}
         />
       </div>
 

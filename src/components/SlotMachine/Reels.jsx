@@ -117,7 +117,7 @@ function Reel({ targetSymbol, spinning, stopDelay, onStopped, highlighted, color
   )
 }
 
-export default function Reels({ reels, spinning, lastResult, onAllStopped }) {
+export default function Reels({ reels, spinning, lastResult, onAllStopped, onReelStopped }) {
   const [allStopped, setAllStopped] = useState(false)
   const stoppedCount = useRef(0)
 
@@ -128,13 +128,14 @@ export default function Reels({ reels, spinning, lastResult, onAllStopped }) {
     }
   }, [spinning])
 
-  const handleStopped = useCallback(() => {
+  const handleStopped = useCallback((reelIndex) => {
+    onReelStopped?.(reelIndex)
     stoppedCount.current += 1
     if (stoppedCount.current === 3) {
       setAllStopped(true)
       onAllStopped?.()
     }
-  }, [onAllStopped])
+  }, [onAllStopped, onReelStopped])
 
   const { indices, color } = getPaylineInfo(reels, allStopped ? lastResult : null)
 
@@ -150,7 +151,7 @@ export default function Reels({ reels, spinning, lastResult, onAllStopped }) {
           targetSymbol={reels ? reels[i] : null}
           spinning={spinning}
           stopDelay={i * STOP_DELAY_STEP}
-          onStopped={handleStopped}
+          onStopped={() => handleStopped(i)}
           highlighted={indices.includes(i)}
           color={color}
         />
