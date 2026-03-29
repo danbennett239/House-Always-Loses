@@ -33,8 +33,14 @@ export default function App() {
   const handleReelsSettled = useCallback(() => {
     setSettledLogLength(engine.sessionData.log.length)
     if (pendingTrick.current) {
-      setActiveToast(pendingTrick.current)
+      const trick = pendingTrick.current
       pendingTrick.current = null
+      const isMobile = window.matchMedia('(max-width: 700px)').matches
+      if (isMobile) {
+        setTimeout(() => setActiveToast(trick), 750)
+      } else {
+        setActiveToast(trick)
+      }
     }
     // Emit event for Chrome extension (or any external listener)
     window.dispatchEvent(new CustomEvent('hal:spin-settled', {
