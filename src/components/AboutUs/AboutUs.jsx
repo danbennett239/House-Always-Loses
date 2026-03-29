@@ -182,7 +182,7 @@ export default function AboutUs() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            The House Always Loses
+            GamBull
           </motion.p>
           <motion.h1
             className="au-hero-title"
