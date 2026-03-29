@@ -20,8 +20,12 @@ export default function App() {
   const { event: trickEvent, clearEvent } = useTrickDetector(
     engine.sessionData, engine.reels, engine.lastResult
   )
-  const pendingTrick = useRef(null)
+  const pendingTrick    = useRef(null)
+  const toastTimeout    = useRef(null)
   const [activeToast, setActiveToast] = useState(null)
+
+  // Clear pending toast timer on unmount
+  useEffect(() => () => clearTimeout(toastTimeout.current), [])
 
   useEffect(() => {
     if (trickEvent) pendingTrick.current = trickEvent
@@ -36,9 +40,10 @@ export default function App() {
     if (pendingTrick.current) {
       const trick = pendingTrick.current
       pendingTrick.current = null
+      clearTimeout(toastTimeout.current)
       const isMobile = window.matchMedia('(max-width: 700px)').matches
       if (isMobile) {
-        setTimeout(() => setActiveToast(trick), 750)
+        toastTimeout.current = setTimeout(() => setActiveToast(trick), 750)
       } else {
         setActiveToast(trick)
       }
@@ -63,6 +68,7 @@ export default function App() {
   }
 
   const handleReset = useCallback(() => {
+    clearTimeout(toastTimeout.current)
     dismissToast()
     pendingTrick.current = null
     engine.reset()

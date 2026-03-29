@@ -101,8 +101,10 @@ listEl.addEventListener('click', (e) => {
   const btn = e.target.closest('.remove-btn')
   if (!btn) return
   const url = btn.dataset.url
-  loadUrls((urls) => {
-    const next = urls.filter(u => u !== url)
-    saveUrls(next, () => renderList(next))
+  chrome.permissions.remove({ origins: [url + '/*'] }, () => {
+    loadUrls((urls) => {
+      const next = urls.filter(u => u !== url)
+      saveUrls(next, () => renderList(next))
+    })
   })
 })

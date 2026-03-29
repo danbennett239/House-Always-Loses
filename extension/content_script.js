@@ -115,10 +115,13 @@ function render(data) {
 
   const sec1 = document.createElement('div')
   sec1.className = 'hal-section'
-  addRow(sec1, 'Lost so far',        `${sign(lossToDate)}${fmt(lossToDate)}`,  lossToDate > 0 ? 'hal-red' : 'hal-green')
-  addRow(sec1, 'Projected / hour',   `-${fmt(perHour)}`,   'hal-red')
-  addRow(sec1, 'Projected / session',`-${fmt(perSession)}`, 'hal-red')
-  addRow(sec1, 'Projected / year',   `-${fmt(perYear)}`,   'hal-red')
+  function projFmt(n) { return `${n > 0 ? '-' : '+'}${fmt(n)}` }
+  function projCls(n) { return n > 0 ? 'hal-red' : 'hal-green' }
+
+  addRow(sec1, 'Lost so far',         `${sign(lossToDate)}${fmt(lossToDate)}`, lossToDate > 0 ? 'hal-red' : 'hal-green')
+  addRow(sec1, 'Projected / hour',    projFmt(perHour),    projCls(perHour))
+  addRow(sec1, 'Projected / session', projFmt(perSession), projCls(perSession))
+  addRow(sec1, 'Projected / year',    projFmt(perYear),    projCls(perYear))
   el.appendChild(sec1)
 
   const divider = document.createElement('div')
