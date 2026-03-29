@@ -25,7 +25,7 @@ const TRICK_CONTENT = {
   },
 }
 
-export default function TrickToast({ event, onDismiss }) {
+export default function TrickToast({ event, onDismiss, onNavigateAbout }) {
   const content = event ? TRICK_CONTENT[event.type] : null
 
   return (
@@ -53,7 +53,9 @@ export default function TrickToast({ event, onDismiss }) {
             <button className="tt-dismiss" onClick={onDismiss} autoFocus>
               Got it
             </button>
-            <span className="tt-hint">More on the About page</span>
+            <button className="tt-hint tt-hint-link" onClick={() => { onDismiss(); onNavigateAbout?.() }}>
+              More on the About page →
+            </button>
           </div>
         </motion.div>
       )}
