@@ -1,43 +1,4 @@
-// ── Projection logic (mirrored from src/utils/projections.js) ──────────────
-const THEORETICAL_RTP        = 0.85
-const SPINS_PER_HOUR         = 600
-const HOURS_PER_SESSION      = 4
-const SESSIONS_PER_YEAR      = 50
-const MIN_SPINS_FOR_EXP_RTP  = 10
-
-function experiencedRTP(sd) {
-  if (sd.totalSpins < MIN_SPINS_FOR_EXP_RTP) return THEORETICAL_RTP
-  return sd.totalWon / sd.totalWagered
-}
-
-function project(avgBet, houseEdge) {
-  const perSpin    = avgBet * houseEdge
-  const perHour    = perSpin    * SPINS_PER_HOUR
-  const perSession = perHour    * HOURS_PER_SESSION
-  const perYear    = perSession * SESSIONS_PER_YEAR
-  return { perSpin, perHour, perSession, perYear }
-}
-
-function calcProjections(sd) {
-  if (sd.totalSpins === 0) return null
-  const avgBet    = sd.totalWagered / sd.totalSpins
-  const rtp       = experiencedRTP(sd)
-  const useExp    = sd.totalSpins >= MIN_SPINS_FOR_EXP_RTP
-  const proj      = project(avgBet, 1 - rtp)
-  return {
-    lossToDate:  -sd.netBalance,
-    perHour:      proj.perHour,
-    perSession:   proj.perSession,
-    perYear:      proj.perYear,
-    ldwCount:     sd.ldwCount,
-    nearMisses:   sd.nearMisses,
-    totalSpins:   sd.totalSpins,
-    usingExpRTP:  useExp,
-    rtp,
-  }
-}
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function fmt(n) {
   return '£' + Math.abs(n).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
@@ -48,99 +9,143 @@ function sign(n) { return n >= 0 ? '-' : '+' }
 let overlay         = null
 let backdrop        = null
 let expanded        = false
-let lastProjections = null
+let lastData        = null
 
 function setExpanded(val) {
   expanded = val
   overlay.classList.toggle('hal-expanded', expanded)
+  overlay.setAttribute('aria-expanded', String(expanded))
   if (expanded) {
     backdrop = document.createElement('div')
     backdrop.id = 'hal-ext-backdrop'
     backdrop.addEventListener('click', () => setExpanded(false))
     document.body.insertBefore(backdrop, overlay)
+    // Move focus into overlay so keyboard users can tab to Minimise
+    overlay.focus()
   } else {
     backdrop?.remove()
     backdrop = null
   }
-  render(lastProjections)
+  render(lastData)
 }
 
 function ensureOverlay() {
-  if (overlay) return overlay
+  // Idempotent — reuse existing element if script is injected more than once
+  const existing = document.getElementById('hal-ext-overlay')
+  if (existing) { overlay = existing; return overlay }
+
   overlay = document.createElement('div')
   overlay.id = 'hal-ext-overlay'
-  overlay.addEventListener('click', () => {
-    if (!expanded) setExpanded(true)
+  overlay.setAttribute('role', 'button')
+  overlay.setAttribute('tabindex', '0')
+  overlay.setAttribute('aria-label', 'Reality Check — click to expand')
+  overlay.setAttribute('aria-expanded', 'false')
+
+  overlay.addEventListener('click', () => { if (!expanded) setExpanded(true) })
+  overlay.addEventListener('keydown', (e) => {
+    if (!expanded && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault()
+      setExpanded(true)
+    }
+    if (expanded && e.key === 'Escape') setExpanded(false)
   })
+
   document.body.appendChild(overlay)
   return overlay
 }
 
-function render(p) {
+function render(data) {
   const el = ensureOverlay()
 
-  if (!p) {
-    el.innerHTML = `
-      <div class="hal-header">
-        <span class="hal-logo">⚠︎</span>
-        <span class="hal-title">Reality Check</span>
-      </div>
-      <p class="hal-idle">Waiting for first spin…</p>
-    `
+  if (!data || !data.projections) {
+    el.innerHTML = ''
+    const header = document.createElement('div')
+    header.className = 'hal-header'
+    header.innerHTML = '<span class="hal-logo">⚠︎</span>'
+    const title = document.createElement('span')
+    title.className = 'hal-title'
+    title.textContent = 'Reality Check'
+    header.appendChild(title)
+    el.appendChild(header)
+
+    const idle = document.createElement('p')
+    idle.className = 'hal-idle'
+    idle.textContent = 'Waiting for first spin…'
+    el.appendChild(idle)
     return
   }
 
-  el.innerHTML = `
-    <div class="hal-header">
-      <span class="hal-logo">⚠︎</span>
-      <span class="hal-title">Reality Check</span>
-      <span class="hal-spins">${p.totalSpins} spin${p.totalSpins !== 1 ? 's' : ''}</span>
-    </div>
+  const { projections: proj, totalSpins, ldwCount, nearMisses, lossToDate } = data
+  const usingExpRTP = proj.usingExperiencedRTP
+  const rtp         = proj.experienced.rtp
+  const perHour     = proj.experienced.netPerHour
+  const perSession  = proj.experienced.netPerSession
+  const perYear     = proj.experienced.netPerYear
 
-    <div class="hal-section">
-      <div class="hal-row">
-        <span class="hal-label">Lost so far</span>
-        <span class="hal-value ${p.lossToDate > 0 ? 'hal-red' : 'hal-green'}">${sign(p.lossToDate)}${fmt(p.lossToDate)}</span>
-      </div>
-      <div class="hal-row">
-        <span class="hal-label">Projected / hour</span>
-        <span class="hal-value hal-red">-${fmt(p.perHour)}</span>
-      </div>
-      <div class="hal-row">
-        <span class="hal-label">Projected / session</span>
-        <span class="hal-value hal-red">-${fmt(p.perSession)}</span>
-      </div>
-      <div class="hal-row">
-        <span class="hal-label">Projected / year</span>
-        <span class="hal-value hal-red">-${fmt(p.perYear)}</span>
-      </div>
-    </div>
+  el.innerHTML = ''
 
-    <div class="hal-divider"></div>
+  // Header
+  const header = document.createElement('div')
+  header.className = 'hal-header'
+  const logo = document.createElement('span')
+  logo.className = 'hal-logo'
+  logo.textContent = '⚠︎'
+  const titleEl = document.createElement('span')
+  titleEl.className = 'hal-title'
+  titleEl.textContent = 'Reality Check'
+  const spinsEl = document.createElement('span')
+  spinsEl.className = 'hal-spins'
+  spinsEl.textContent = `${totalSpins} spin${totalSpins !== 1 ? 's' : ''}`
+  header.append(logo, titleEl, spinsEl)
+  el.appendChild(header)
 
-    <div class="hal-section">
-      <div class="hal-row">
-        <span class="hal-label">Loss Disguised as Win</span>
-        <span class="hal-value hal-orange">${p.ldwCount}×</span>
-      </div>
-      <div class="hal-row">
-        <span class="hal-label">Near Misses</span>
-        <span class="hal-value hal-orange">${p.nearMisses}×</span>
-      </div>
-      <div class="hal-row">
-        <span class="hal-label">Actual RTP${p.usingExpRTP ? '' : '*'}</span>
-        <span class="hal-value">${(p.rtp * 100).toFixed(1)}%</span>
-      </div>
-    </div>
+  // Rows helper
+  function addRow(parent, label, value, cls) {
+    const row = document.createElement('div')
+    row.className = 'hal-row'
+    const l = document.createElement('span')
+    l.className = 'hal-label'
+    l.textContent = label
+    const v = document.createElement('span')
+    v.className = `hal-value${cls ? ' ' + cls : ''}`
+    v.textContent = value
+    row.append(l, v)
+    parent.appendChild(row)
+  }
 
-    ${!p.usingExpRTP ? `<p class="hal-note">* Theoretical until ${MIN_SPINS_FOR_EXP_RTP} spins</p>` : ''}
-    ${expanded ? `<button class="hal-collapse-btn" id="hal-collapse">Minimise</button>` : ''}
-  `
+  const sec1 = document.createElement('div')
+  sec1.className = 'hal-section'
+  addRow(sec1, 'Lost so far',        `${sign(lossToDate)}${fmt(lossToDate)}`,  lossToDate > 0 ? 'hal-red' : 'hal-green')
+  addRow(sec1, 'Projected / hour',   `-${fmt(perHour)}`,   'hal-red')
+  addRow(sec1, 'Projected / session',`-${fmt(perSession)}`, 'hal-red')
+  addRow(sec1, 'Projected / year',   `-${fmt(perYear)}`,   'hal-red')
+  el.appendChild(sec1)
 
-  document.getElementById('hal-collapse')?.addEventListener('click', (e) => {
-    e.stopPropagation()
-    setExpanded(false)
-  })
+  const divider = document.createElement('div')
+  divider.className = 'hal-divider'
+  el.appendChild(divider)
+
+  const sec2 = document.createElement('div')
+  sec2.className = 'hal-section'
+  addRow(sec2, 'Loss Disguised as Win', `${ldwCount}×`,    'hal-orange')
+  addRow(sec2, 'Near Misses',           `${nearMisses}×`,  'hal-orange')
+  addRow(sec2, `Actual RTP${usingExpRTP ? '' : '*'}`, `${(rtp * 100).toFixed(1)}%`)
+  el.appendChild(sec2)
+
+  if (!usingExpRTP) {
+    const note = document.createElement('p')
+    note.className = 'hal-note'
+    note.textContent = '* Theoretical — more spins needed'
+    el.appendChild(note)
+  }
+
+  if (expanded) {
+    const btn = document.createElement('button')
+    btn.className = 'hal-collapse-btn'
+    btn.textContent = 'Minimise'
+    btn.addEventListener('click', (e) => { e.stopPropagation(); setExpanded(false) })
+    el.appendChild(btn)
+  }
 }
 
 // ── Listen ────────────────────────────────────────────────────────────────────
@@ -148,7 +153,6 @@ ensureOverlay()
 render(null)
 
 window.addEventListener('hal:spin-settled', (e) => {
-  const { sessionData } = e.detail
-  lastProjections = calcProjections(sessionData)
-  render(lastProjections)
+  lastData = e.detail
+  render(lastData)
 })

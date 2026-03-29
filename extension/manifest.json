@@ -13,9 +13,10 @@
   "permissions": [
     "storage",
     "scripting",
-    "tabs"
+    "tabs",
+    "permissions"
   ],
-  "host_permissions": [
+  "optional_host_permissions": [
     "<all_urls>"
   ]
 }

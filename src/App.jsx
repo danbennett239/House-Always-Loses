@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useGameEngine } from './hooks/useGameEngine.js'
+import { projectLifetime } from './utils/projections.js'
 import { useTrickDetector } from './hooks/useTrickDetector.js'
 import SlotMachine from './components/SlotMachine/SlotMachine.jsx'
 import HowToWin from './components/HowToWin/HowToWin.jsx'
@@ -42,12 +43,16 @@ export default function App() {
         setActiveToast(trick)
       }
     }
-    // Emit event for Chrome extension (or any external listener)
+    // Emit pre-computed projections for Chrome extension — no raw session data exposed
+    const proj = projectLifetime(engine.sessionData)
+    const sd   = engine.sessionData
     window.dispatchEvent(new CustomEvent('hal:spin-settled', {
       detail: {
-        sessionData: engine.sessionData,
-        lastResult:  engine.lastResult,
-        balance:     engine.balance,
+        projections: proj,
+        totalSpins:  sd.totalSpins,
+        ldwCount:    sd.ldwCount,
+        nearMisses:  sd.nearMisses,
+        lossToDate:  -sd.netBalance,
       }
     }))
   }, [engine.sessionData, engine.lastResult, engine.balance])

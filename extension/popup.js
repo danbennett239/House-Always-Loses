@@ -16,16 +16,28 @@ function normalise(raw) {
 function renderList(urls) {
   listEl.innerHTML = ''
   if (urls.length === 0) {
-    listEl.innerHTML = '<p class="empty">No sites added yet.</p>'
+    const empty = document.createElement('p')
+    empty.className = 'empty'
+    empty.textContent = 'No sites added yet.'
+    listEl.appendChild(empty)
     return
   }
   urls.forEach((url) => {
     const item = document.createElement('div')
     item.className = 'url-item'
-    item.innerHTML = `
-      <span class="url-text" title="${url}">${url}</span>
-      <button class="remove-btn" data-url="${url}" title="Remove">×</button>
-    `
+
+    const text = document.createElement('span')
+    text.className = 'url-text'
+    text.textContent = url
+    text.title = url
+
+    const btn = document.createElement('button')
+    btn.className = 'remove-btn'
+    btn.textContent = '×'
+    btn.title = 'Remove'
+    btn.dataset.url = url
+
+    item.append(text, btn)
     listEl.appendChild(item)
   })
 }
@@ -55,19 +67,26 @@ function handleAdd() {
       return
     }
     const next = [...urls, origin]
-    saveUrls(next, () => {
-      renderList(next)
-      input.value = ''
-      // Inject immediately into any already-open tabs matching this origin
-      chrome.tabs.query({}, (tabs) => {
-        tabs.forEach((tab) => {
-          if (!tab.url) return
-          try {
-            if (new URL(tab.url).origin === origin) {
-              chrome.scripting.insertCSS({ target: { tabId: tab.id }, files: ['overlay.css'] }).catch(() => {})
-              chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content_script.js'] }).catch(() => {})
-            }
-          } catch {}
+    // Request host permission for this origin before saving and injecting
+    chrome.permissions.request({ origins: [origin + '/*'] }, (granted) => {
+      if (!granted) {
+        errorEl.textContent = 'Permission denied — cannot inject into that site.'
+        return
+      }
+      saveUrls(next, () => {
+        renderList(next)
+        input.value = ''
+        // Inject immediately into any already-open tabs matching this origin
+        chrome.tabs.query({}, (tabs) => {
+          tabs.forEach((tab) => {
+            if (!tab.url) return
+            try {
+              if (new URL(tab.url).origin === origin) {
+                chrome.scripting.insertCSS({ target: { tabId: tab.id }, files: ['overlay.css'] }).catch(() => {})
+                chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content_script.js'] }).catch(() => {})
+              }
+            } catch {}
+          })
         })
       })
     })
