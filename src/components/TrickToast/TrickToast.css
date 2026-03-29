@@ -140,8 +140,13 @@
   transition: color 0.15s;
 }
 
-.tt-hint-link:hover,
+.tt-hint-link:hover {
+  color: #5aabff;
+}
+
 .tt-hint-link:focus-visible {
   color: #5aabff;
-  outline: none;
+  outline: 2px solid #4a9eff;
+  outline-offset: 3px;
+  border-radius: 2px;
 }
