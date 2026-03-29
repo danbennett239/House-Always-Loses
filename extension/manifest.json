@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "House Always Loses — Reality Check",
+  "version": "0.1.0",
+  "description": "Shows you what the machine doesn't want you to see.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Reality Check"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage",
+    "scripting",
+    "tabs",
+    "permissions"
+  ],
+  "optional_host_permissions": [
+    "<all_urls>"
+  ]
+}

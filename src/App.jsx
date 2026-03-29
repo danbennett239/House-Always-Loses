@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useGameEngine } from './hooks/useGameEngine.js'
+import { projectLifetime } from './utils/projections.js'
 import { useTrickDetector } from './hooks/useTrickDetector.js'
 import SlotMachine from './components/SlotMachine/SlotMachine.jsx'
 import HowToWin from './components/HowToWin/HowToWin.jsx'
@@ -19,8 +20,12 @@ export default function App() {
   const { event: trickEvent, clearEvent } = useTrickDetector(
     engine.sessionData, engine.reels, engine.lastResult
   )
-  const pendingTrick = useRef(null)
+  const pendingTrick    = useRef(null)
+  const toastTimeout    = useRef(null)
   const [activeToast, setActiveToast] = useState(null)
+
+  // Clear pending toast timer on unmount
+  useEffect(() => () => clearTimeout(toastTimeout.current), [])
 
   useEffect(() => {
     if (trickEvent) pendingTrick.current = trickEvent
@@ -33,10 +38,29 @@ export default function App() {
   const handleReelsSettled = useCallback(() => {
     setSettledLogLength(engine.sessionData.log.length)
     if (pendingTrick.current) {
-      setActiveToast(pendingTrick.current)
+      const trick = pendingTrick.current
       pendingTrick.current = null
+      clearTimeout(toastTimeout.current)
+      const isMobile = window.matchMedia('(max-width: 700px)').matches
+      if (isMobile) {
+        toastTimeout.current = setTimeout(() => setActiveToast(trick), 750)
+      } else {
+        setActiveToast(trick)
+      }
     }
-  }, [engine.sessionData.log.length])
+    // Emit pre-computed projections for Chrome extension — no raw session data exposed
+    const proj = projectLifetime(engine.sessionData)
+    const sd   = engine.sessionData
+    window.dispatchEvent(new CustomEvent('hal:spin-settled', {
+      detail: {
+        projections: proj,
+        totalSpins:  sd.totalSpins,
+        ldwCount:    sd.ldwCount,
+        nearMisses:  sd.nearMisses,
+        lossToDate:  proj?.lossToDate ?? 0,
+      }
+    }))
+  }, [engine.sessionData, engine.lastResult, engine.balance])
 
   function dismissToast() {
     setActiveToast(null)
@@ -44,6 +68,7 @@ export default function App() {
   }
 
   const handleReset = useCallback(() => {
+    clearTimeout(toastTimeout.current)
     dismissToast()
     pendingTrick.current = null
     engine.reset()
