@@ -111,7 +111,7 @@ export default function App() {
         <div className="game-layout" data-toast-active={!!activeToast || undefined}>
           {/* Left column: trick callout lives here */}
           <div className="toast-area">
-            <TrickToast event={activeToast} onDismiss={dismissToast} />
+            <TrickToast event={activeToast} onDismiss={dismissToast} onNavigateAbout={() => setPage('about')} />
           </div>
           {/* Centre column (row 1): machine. HowToWin placed in row 2 same column via CSS grid. */}
           <div className="machine-column">
