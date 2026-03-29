@@ -3,7 +3,7 @@ function fmt(n) {
   return '£' + Math.abs(n).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-function sign(n) { return n >= 0 ? '-' : '+' }
+function sign(n) { return n === 0 ? '' : n > 0 ? '-' : '+' }
 
 // ── Overlay ───────────────────────────────────────────────────────────────────
 let overlay         = null
@@ -151,11 +151,14 @@ function render(data) {
   }
 }
 
-// ── Listen ────────────────────────────────────────────────────────────────────
-ensureOverlay()
-render(null)
+// ── Listen (guarded — safe to inject multiple times) ─────────────────────────
+if (!globalThis.__halInitialised) {
+  globalThis.__halInitialised = true
+  ensureOverlay()
+  render(null)
 
-window.addEventListener('hal:spin-settled', (e) => {
-  lastData = e.detail
-  render(lastData)
-})
+  window.addEventListener('hal:spin-settled', (e) => {
+    lastData = e.detail
+    render(lastData)
+  })
+}

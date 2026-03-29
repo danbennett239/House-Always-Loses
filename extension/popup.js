@@ -79,7 +79,7 @@ function handleAdd() {
         // Inject immediately into any already-open tabs matching this origin
         chrome.tabs.query({}, (tabs) => {
           tabs.forEach((tab) => {
-            if (!tab.url) return
+            if (!tab.id || !tab.url) return
             try {
               if (new URL(tab.url).origin === origin) {
                 chrome.scripting.insertCSS({ target: { tabId: tab.id }, files: ['overlay.css'] }).catch(() => {})
