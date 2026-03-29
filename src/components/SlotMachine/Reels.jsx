@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { motion, animate, useMotionValue } from 'framer-motion'
 import { SYMBOLS } from '../../utils/probability.js'
 import './Reels.css'
@@ -137,6 +137,11 @@ export default function Reels({ reels, spinning, lastResult, onAllStopped, onRee
     }
   }, [onAllStopped, onReelStopped])
 
+  const reelCallbacks = useMemo(
+    () => [0, 1, 2].map(i => () => handleStopped(i)),
+    [handleStopped]
+  )
+
   const { indices, color } = getPaylineInfo(reels, allStopped ? lastResult : null)
 
   const showLine  = indices.length >= 2 && allStopped
@@ -151,7 +156,7 @@ export default function Reels({ reels, spinning, lastResult, onAllStopped, onRee
           targetSymbol={reels ? reels[i] : null}
           spinning={spinning}
           stopDelay={i * STOP_DELAY_STEP}
-          onStopped={() => handleStopped(i)}
+          onStopped={reelCallbacks[i]}
           highlighted={indices.includes(i)}
           color={color}
         />
